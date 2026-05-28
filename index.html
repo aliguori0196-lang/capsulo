@@ -116,6 +116,11 @@ tr:last-child td{border-bottom:none;}
 .form-group{display:flex;flex-direction:column;gap:4px;}
 .form-label{font-size:11px;color:var(--text2);}
 input,select{font-size:13px;padding:7px 10px;border:0.5px solid var(--border2);border-radius:var(--r);background:var(--bg);color:var(--text);width:100%;outline:none;font-family:var(--font-body);}
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear,
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-textfield-decoration-container{display:none!important;}
+input[type="password"]{-webkit-appearance:none;}
 input:focus,select:focus{border-color:var(--chambray);box-shadow:0 0 0 2px rgba(121,163,195,.2);}
 .btn-add{border:none;border-radius:var(--r);padding:7px 16px;font-size:13px;color:#EBCDB7;cursor:pointer;white-space:nowrap;font-weight:500;display:flex;align-items:center;gap:5px;font-family:var(--font-body);}
 .btn-add:hover{opacity:.88;}
