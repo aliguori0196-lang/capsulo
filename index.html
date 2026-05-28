@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="theme-color" content="#3A2119"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Capsulo"/>
+<meta name="description" content="Il tuo inventario capsule Nespresso, sempre con te."/>
+<link rel="manifest" href="/manifest.json"/>
+<link rel="apple-touch-icon" href="/icon-192.png"/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%233A2119'/><ellipse cx='16' cy='19' rx='8' ry='5' fill='%23EBCDB7'/><path d='M10 19 Q10 13 16 12 Q22 13 22 19' stroke='%23EBCDB7' stroke-width='1.2' fill='none'/><path d='M22 15 Q26 14 26 17 Q26 20 22 19' stroke='%2379A3C3' stroke-width='1.5' fill='none' stroke-linecap='round'/></svg>"/>
+<title>Capsulo — Inventario Nespresso</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --espresso:#3A2119;--chambray:#79A3C3;--bisque:#EBCDB7;--glacier:#D2E2EC;--clay:#957662;
+  --bg:#ffffff;--bg2:#F7F3EE;--bg3:#F5F0E8;
+  --text:#3A2119;--text2:#957662;--text3:#b8a090;
+  --border:rgba(58,33,25,0.12);--border2:rgba(58,33,25,0.22);
+  --accent-orig:#3A2119;--accent-vert:#79A3C3;
+  --r:8px;--rl:12px;
+  --font-head:'Playfair Display',Georgia,serif;
+  --font-body:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#1e1510;--bg2:#2a1d15;--bg3:#1a100a;
+    --text:#EBCDB7;--text2:#957662;--text3:#6b4f40;
+    --border:rgba(235,205,183,0.12);--border2:rgba(235,205,183,0.22);
+  }
+  .badge-ok{background:#0d2a1a!important;color:#7AB894!important;}
+  .badge-warn{background:#2a1a05!important;color:#EF9F27!important;}
+  .badge-danger{background:#2a0d0d!important;color:#F09595!important;}
+}
+body.theme-light{
+  --bg:#ffffff;--bg2:#F7F3EE;--bg3:#F5F0E8;
+  --text:#3A2119;--text2:#957662;--text3:#b8a090;
+  --border:rgba(58,33,25,0.12);--border2:rgba(58,33,25,0.22);
+}
+body.theme-light .badge-ok{background:#e6f0e8!important;color:#2d6b3a!important;}
+body.theme-light .badge-warn{background:#faeeda!important;color:#854F0B!important;}
+body.theme-light .badge-danger{background:#fce8e8!important;color:#a32d2d!important;}
+body.theme-dark{
+  --bg:#1e1510;--bg2:#2a1d15;--bg3:#1a100a;
+  --text:#EBCDB7;--text2:#957662;--text3:#6b4f40;
+  --border:rgba(235,205,183,0.12);--border2:rgba(235,205,183,0.22);
+}
+body.theme-dark .badge-ok{background:#0d2a1a!important;color:#7AB894!important;}
+body.theme-dark .badge-warn{background:#2a1a05!important;color:#EF9F27!important;}
+body.theme-dark .badge-danger{background:#2a0d0d!important;color:#F09595!important;}
+body{font-family:var(--font-body);background:var(--bg3);color:var(--text);min-height:100vh;padding:1.5rem 0.75rem;}
+@media(min-width:600px){body{padding:2rem 1rem;}}
+.container{max-width:980px;margin:0 auto;}
+.top-bar{text-align:center;margin-bottom:1.5rem;}
+.greeting{font-family:var(--font-head);font-size:26px;font-weight:500;color:var(--espresso);margin-bottom:14px;}
+@media(prefers-color-scheme:dark){.greeting{color:var(--bisque);}}
+body.theme-dark .greeting{color:var(--bisque);}
+body.theme-light .greeting{color:var(--espresso);}
+.greeting span{color:var(--chambray);}
+@media(min-width:600px){.greeting{font-size:30px;}}
+.tabs{display:inline-flex;gap:6px;background:rgba(58,33,25,0.08);border-radius:40px;padding:5px;}
+body.theme-dark .tabs{background:rgba(235,205,183,0.08);}
+.tab-btn{border:none;border-radius:40px;padding:8px 28px;font-size:14px;font-weight:500;cursor:pointer;transition:background .2s,color .2s;background:transparent;color:var(--text2);font-family:var(--font-body);}
+.tab-btn.active-orig{background:var(--espresso);color:#EBCDB7;}
+.tab-btn.active-vert{background:var(--chambray);color:#fff;}
+header{display:flex;align-items:center;gap:12px;margin-bottom:1.25rem;}
+.icon-wrap{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;flex-shrink:0;}
+header h1{font-family:var(--font-head);font-size:18px;font-weight:500;}
+header p{font-size:12px;color:var(--text2);margin-top:2px;}
+.metrics-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.25rem;}
+@media(max-width:600px){.metrics-row{grid-template-columns:repeat(2,1fr);}}
+.metric{background:var(--bg2);border-radius:var(--r);padding:14px 16px;border:0.5px solid var(--border);}
+.metric-label{font-size:12px;color:var(--text2);margin-bottom:4px;}
+.metric-value{font-family:var(--font-head);font-size:24px;font-weight:500;}
+.metric-sub{font-size:11px;color:var(--text3);margin-top:3px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:1.25rem;}
+@media(max-width:640px){.grid-2{grid-template-columns:1fr;}}
+.card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--rl);padding:1rem 1.25rem;margin-bottom:1.25rem;}
+.section-title{font-size:10px;font-weight:500;color:var(--text2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;}
+.legend-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px;font-size:12px;color:var(--text2);}
+.legend-item{display:flex;align-items:center;gap:5px;}
+.legend-sq{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+.scarcity-row{display:flex;flex-direction:column;gap:10px;}
+.scarcity-item{display:flex;align-items:center;gap:10px;font-size:13px;}
+.scarcity-name{min-width:100px;display:flex;align-items:center;gap:6px;}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.scarcity-track{flex:1;height:7px;background:var(--border);border-radius:4px;overflow:hidden;}
+.scarcity-fill{height:100%;border-radius:4px;}
+.scarcity-qty{font-size:12px;min-width:26px;text-align:right;font-weight:500;}
+.scarcity-weeks{font-size:11px;color:var(--text3);min-width:54px;}
+.table-wrapper{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{font-size:10px;font-weight:500;color:var(--text2);text-align:left;padding:6px 8px;border-bottom:0.5px solid var(--border);letter-spacing:.05em;text-transform:uppercase;}
+td{padding:8px;border-bottom:0.5px solid var(--border);color:var(--text);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+.badge{display:inline-block;font-size:11px;font-weight:500;padding:3px 8px;border-radius:4px;}
+.badge-ok{background:#e6f0e8;color:#2d6b3a;}
+.badge-warn{background:#faeeda;color:#854F0B;}
+.badge-danger{background:#fce8e8;color:#a32d2d;}
+.qty-cell{display:flex;align-items:center;gap:8px;}
+.qty-bar{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;min-width:36px;}
+.qty-fill{height:100%;border-radius:3px;background:#2d6b3a;}
+.qty-fill.medium{background:#BA7517;}
+.qty-fill.low{background:#a32d2d;}
+.intensity-bar{display:inline-block;height:5px;width:48px;background:var(--border);border-radius:3px;overflow:hidden;vertical-align:middle;}
+.intensity-fill{height:100%;border-radius:3px;}
+.separator{height:0.5px;background:var(--border);margin:1.25rem 0;}
+.add-form{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:8px;align-items:end;}
+@media(max-width:700px){.add-form{grid-template-columns:1fr 1fr;} .add-form .btn-add{grid-column:1/-1;justify-content:center;}}
+.form-group{display:flex;flex-direction:column;gap:4px;}
+.form-label{font-size:11px;color:var(--text2);}
+input,select{font-size:13px;padding:7px 10px;border:0.5px solid var(--border2);border-radius:var(--r);background:var(--bg);color:var(--text);width:100%;outline:none;font-family:var(--font-body);}
+input:focus,select:focus{border-color:var(--chambray);box-shadow:0 0 0 2px rgba(121,163,195,.2);}
+.btn-add{border:none;border-radius:var(--r);padding:7px 16px;font-size:13px;color:#EBCDB7;cursor:pointer;white-space:nowrap;font-weight:500;display:flex;align-items:center;gap:5px;font-family:var(--font-body);}
+.btn-add:hover{opacity:.88;}
+.btn-del{background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:2px 6px;border-radius:4px;}
+.btn-del:hover{color:#a32d2d;background:#fce8e8;}
+.btn-consume{background:transparent;border:0.5px solid var(--border2);border-radius:4px;color:var(--text2);cursor:pointer;font-size:12px;font-weight:600;padding:3px 8px;transition:background .15s,color .15s;}
+.btn-consume:hover{background:var(--chambray);color:#fff;border-color:var(--chambray);}
+.btn-consume:active{transform:scale(0.95);}
+.recipes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
+.recipe-card{background:var(--bg2);border-radius:var(--r);padding:.85rem 1rem;border:0.5px solid var(--border);}
+.recipe-card-header{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;}
+.recipe-icon{font-size:20px;flex-shrink:0;line-height:1;}
+.recipe-name{font-family:var(--font-head);font-size:13px;font-weight:500;color:var(--esp);}
+.recipe-capsule{font-size:10px;color:var(--clay);margin-top:2px;}
+.recipe-body{font-size:11px;color:var(--clay);line-height:1.5;}
+.recipe-ing{margin-bottom:5px;}
+.recipe-ing strong{color:var(--text);font-weight:500;font-size:10px;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:2px;}
+.recipe-steps{padding-left:12px;}
+.recipe-steps li{margin-bottom:2px;}
+.recipe-tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:3px;margin-top:6px;font-weight:500;}
+.tag-world{background:#f0ece6;color:#5c3d1e;}
+.tag-starbucks{background:#e8f0e8;color:#1e5c2e;}
+.recipe-extras{margin-top:7px;padding-top:6px;border-top:0.5px solid var(--border);}
+.recipe-extras-label{font-size:9px;font-weight:500;color:var(--clay);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px;}
+.recipe-extra-pill{display:inline-block;font-size:10px;background:rgba(121,163,195,0.15);color:var(--cha, #79A3C3);border:0.5px solid rgba(121,163,195,0.3);border-radius:3px;padding:1px 6px;margin:1px 2px 1px 0;}
+.rtag-btn{background:transparent;border:0.5px solid var(--border2);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--clay);cursor:pointer;font-family:var(--font-body);transition:background .15s,color .15s;}
+.rtag-btn:hover{background:var(--bg2);}
+.rtag-active{background:var(--esp)!important;color:var(--bis)!important;border-color:var(--esp)!important;}
+.tag-hot{background:#fae8e0;color:#7a2e10;}
+.tag-cold{background:#d2e2ec;color:#2a5a7a;}
+.tag-milk{background:#e8ede6;color:#2d5a35;}
+.accordion-card{padding:0 1.25rem;}
+.accordion-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 0;cursor:pointer;user-select:none;}
+.accordion-header:hover .accordion-icon{color:var(--text);}
+.accordion-icon{font-size:16px;color:var(--text3);transition:transform .2s;}
+.accordion-icon.open{transform:rotate(180deg);}
+.accordion-body{padding-bottom:1rem;}
+.modal-overlay{position:fixed;inset:0;background:rgba(58,33,25,.55);display:flex;align-items:center;justify-content:center;z-index:999;}
+.modal-box{background:var(--bg);border-radius:var(--rl);padding:2rem;max-width:360px;width:90%;text-align:center;border:0.5px solid var(--border);}
+.modal-box h2{font-family:var(--font-head);font-size:20px;font-weight:500;margin-bottom:8px;color:var(--espresso);}
+body.theme-dark .modal-box h2{color:var(--bisque);}
+.modal-box p{font-size:13px;color:var(--text2);margin-bottom:1rem;}
+.modal-box input{margin-bottom:8px;text-align:left;font-size:15px;}
+.modal-box input[type="email"],.modal-box input[type="password"],.modal-box input[type="text"]{text-align:left;}
+.btn-confirm{width:100%;background:var(--espresso);color:#EBCDB7;border:none;border-radius:var(--r);padding:10px;font-size:14px;font-weight:500;cursor:pointer;font-family:var(--font-body);}
+.btn-confirm:hover{opacity:.88;}
+.nespresso-logo{font-size:28px;margin-bottom:12px;}
+</style>
+</head>
+<body>
+
+<div class="modal-overlay" id="nameModal">
+  <div class="modal-box">
+    <div class="nespresso-logo">☕</div>
+    <h2 id="authTitle">Benvenuto nella tua dashboard</h2>
+    <p id="authSub" style="font-size:13px;color:var(--text2);margin-bottom:1.25rem">Accedi per vedere il tuo inventario Nespresso.</p>
+    <input type="email" id="authEmail" placeholder="La tua email" style="margin-bottom:8px"/>
+    <div style="position:relative;margin-bottom:8px">
+      <input type="password" id="authPass" placeholder="Password" style="width:100%;padding-right:44px"/>
+      <button id="passEyeBtn" type="button" style="position:absolute;right:0;top:0;height:100%;width:44px;background:none;border:none;cursor:pointer;color:var(--text2);font-size:18px;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent" aria-label="Mostra/nascondi password">
+        <i class="ti ti-eye" id="passEyeIcon"></i>
+      </button>
+    </div>
+    <input type="text" id="authName" placeholder="Il tuo nome" style="margin-bottom:8px;display:none"/>
+    <p id="authError" style="font-size:12px;color:#A32D2D;margin-bottom:8px;min-height:16px"></p>
+    <button class="btn-confirm" id="authMode" data-mode="login" onclick="doLogin()">Accedi</button>
+    <p id="authToggle" style="font-size:12px;color:var(--text2);margin-top:12px">Non hai un account? <a href="#" onclick="toggleAuthMode()" style="color:var(--accent-vert)">Registrati</a></p>
+  </div>
+</div>
+
+<div class="container" id="mainContent" style="display:none">
+  <div class="top-bar">
+    <div class="greeting">Ciao, <span id="greetName"></span> ☕ <button onclick="editName()" title="Modifica nome" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;vertical-align:middle;padding:0 4px"><i class="ti ti-pencil"></i></button></div>
+    <div class="tabs">
+      <button class="tab-btn" id="tabOrig" onclick="setLine('original')">
+        <i class="ti ti-circle-filled" style="font-size:10px;margin-right:5px;" aria-hidden="true"></i>Originale
+      </button>
+      <button class="tab-btn" id="tabVert" onclick="setLine('vertuo')">
+        <i class="ti ti-circle-filled" style="font-size:10px;margin-right:5px;" aria-hidden="true"></i>Vertuo
+      </button>
+    </div>
+    <div style="margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px">
+      <button id="themeBtn" onclick="toggleTheme()" style="background:transparent;border:0.5px solid var(--border2);border-radius:var(--r);padding:5px 14px;font-size:12px;color:var(--text2);cursor:pointer" aria-label="Cambia tema">
+        <i class="ti ti-sun" id="themeIcon"></i>
+      </button>
+      <button id="logoutBtn" onclick="doLogout()" style="display:none;background:transparent;border:0.5px solid var(--border2);border-radius:var(--r);padding:5px 14px;font-size:12px;color:var(--text2);cursor:pointer">
+        <i class="ti ti-logout" style="margin-right:4px" aria-hidden="true"></i>Esci
+      </button>
+    </div>
+  </div>
+
+  <header>
+    <div class="icon-wrap" id="lineIcon"><i class="ti ti-coffee" aria-hidden="true"></i></div>
+    <div>
+      <h1 id="lineTitle">Nespresso Originale</h1>
+      <p id="lastUpdate"></p>
+    </div>
+  </header>
+
+  <div class="metrics-row" id="metricsRow"></div>
+
+  <div class="grid-2">
+    <div class="card" style="margin-bottom:0">
+      <div class="section-title">Distribuzione per gusto</div>
+      <div class="legend-row" id="legendFlavor"></div>
+      <div style="position:relative;height:190px"><canvas id="chartFlavor" role="img" aria-label="Distribuzione capsule per gusto"></canvas></div>
+    </div>
+    <div class="card" style="margin-bottom:0">
+      <div class="section-title">Scorte in esaurimento</div>
+      <div class="scarcity-row" id="scarcityList"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Inventario capsule</div>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Gusto</th><th>Intensità</th><th>Quantità</th>
+            <th>Consumo/sett.</th><th>Box da acquistare</th>
+            <th>Scadenza</th><th>Stato</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="inventoryBody"></tbody>
+      </table>
+    </div>
+    <div class="separator"></div>
+    <div class="section-title">Aggiungi capsula</div>
+    <div class="add-form" style="grid-template-columns:2fr 1fr 1fr auto">
+      <div class="form-group">
+        <div class="form-label">Gusto</div>
+        <select id="inName" onchange="onCapsuleSelect()"><option value="">— seleziona capsula —</option></select>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Quantità</div>
+        <input type="number" id="inQty" placeholder="10" min="1"/>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Scadenza</div>
+        <input type="month" id="inExp"/>
+      </div>
+      <button class="btn-add" id="addBtn" onclick="addCapsule()">
+        <i class="ti ti-plus" aria-hidden="true"></i> Aggiungi
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Proiezione consumo — prossime 8 settimane</div>
+    <div class="legend-row" id="legendProj"></div>
+    <div style="position:relative;height:200px"><canvas id="chartProj" role="img" aria-label="Proiezione consumo settimanale capsule"></canvas></div>
+  </div>
+
+  <div class="card accordion-card">
+    <div class="accordion-header" onclick="toggleAccordion('recipesBody', this)">
+      <span class="section-title" style="margin-bottom:0">Ricette Nespresso</span>
+      <i class="ti ti-chevron-down accordion-icon"></i>
+    </div>
+    <div id="recipesBody" class="accordion-body" style="display:none">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;margin-bottom:12px;align-items:center">
+        <select id="recipeFilter" onchange="renderRecipes()" style="font-size:12px;padding:5px 10px;width:auto;max-width:220px">
+          <option value="all">Tutte le capsule</option>
+        </select>
+        <div style="display:flex;gap:6px;margin-left:4px">
+          <button onclick="setRecipeTag('all')" id="rtag-all" class="rtag-btn rtag-active">Tutte</button>
+          <button onclick="setRecipeTag('hot')" id="rtag-hot" class="rtag-btn">☕ Caldo</button>
+          <button onclick="setRecipeTag('milk')" id="rtag-milk" class="rtag-btn">🥛 Con latte</button>
+          <button onclick="setRecipeTag('cold')" id="rtag-cold" class="rtag-btn">🧊 Freddo</button>
+          <button onclick="setRecipeTag('world')" id="rtag-world" class="rtag-btn">🌍 Dal mondo</button>
+          <button onclick="setRecipeTag('starbucks')" id="rtag-starbucks" class="rtag-btn">⭐ Starbucks</button>
+        </div>
+      </div>
+      <div class="recipes-grid" id="recipesGrid"></div>
+    </div>
+  </div>
+
+  <div class="card accordion-card" id="shoppingCard">
+    <div class="accordion-header" onclick="toggleAccordion('shoppingBody', this)">
+      <span class="section-title" style="margin-bottom:0">Lista della spesa</span>
+      <i class="ti ti-chevron-down accordion-icon"></i>
+    </div>
+    <div id="shoppingBody" class="accordion-body" style="display:none">
+      <div style="display:flex;align-items:center;gap:8px;margin-top:12px;margin-bottom:4px">
+        <span style="font-size:11px;color:var(--text3)">Mostra:</span>
+        <select id="shoppingFilter" onchange="renderShoppingList()" style="font-size:12px;padding:4px 8px;width:auto">
+          <option value="all">Tutte le linee</option>
+          <option value="original">Solo Originale</option>
+          <option value="vertuo">Solo Vertuo</option>
+        </select>
+      </div>
+      <div id="shoppingList"></div>
+      <div id="shoppingTotal" style="margin-top:12px;padding-top:12px;border-top:0.5px solid var(--border)"></div>
+    </div>
+  </div>
+  <div style="text-align:center;padding:1.5rem 0 0.5rem;font-size:11px;color:var(--text3);letter-spacing:.05em">
+    Capsulo <span id="appVersion">v0.2</span>
+  </div>
+</div>
+
+<script>
+// ── CONSTANTS ────────────────────────────────────────────────
+const COLORS=['#378ADD','#1D9E75','#D85A30','#D4537E','#BA7517','#7F77DD','#639922','#E24B4A','#0F6E56','#9FE1CB'];
+const SK='nespresso_v2';
+let currentLine='original';
+let chartFlavor=null, chartProj=null;
+
+// ── CATALOGUE ────────────────────────────────────────────────
+const CATALOGUE={
+  original:[
+    {cat:'Ispirazione Italiana',name:'Caffè Florian'},
+    {cat:'Ispirazione Italiana',name:'Venezia'},
+    {cat:'Ispirazione Italiana',name:'Arpeggio'},
+    {cat:'Ispirazione Italiana',name:'Arpeggio Extra'},
+    {cat:'Ispirazione Italiana',name:'Arpeggio Decaffeinato'},
+    {cat:'Ispirazione Italiana',name:'Ristretto'},
+    {cat:'Ispirazione Italiana',name:'Ristretto Decaffeinato'},
+    {cat:'Ispirazione Italiana',name:'Roma'},
+    {cat:'Ispirazione Italiana',name:'Napoli'},
+    {cat:'Ispirazione Italiana',name:'Livanto'},
+    {cat:'Ispirazione Italiana',name:'Kazaar'},
+    {cat:'World Explorations',name:'Lisbon Bica'},
+    {cat:'World Explorations',name:'Rio de Janeiro Espresso'},
+    {cat:'World Explorations',name:'Paris Espresso'},
+    {cat:'World Explorations',name:'Istanbul Espresso'},
+    {cat:'World Explorations',name:'Stockholm Lungo'},
+    {cat:'World Explorations',name:'Cape Town Lungo'},
+    {cat:'World Explorations',name:'Shanghai Lungo'},
+    {cat:'World Explorations',name:'Tokyo Vivalto Lungo'},
+    {cat:'World Explorations',name:'Buenos Aires Lungo'},
+    {cat:'World Explorations',name:'Vienna Lungo'},
+    {cat:'World Explorations',name:'Vienna Lungo Decaffeinato'},
+    {cat:'Barista Creations',name:'Scuro'},
+    {cat:'Barista Creations',name:'Chiaro'},
+    {cat:'Barista Creations',name:'Corto'},
+    {cat:'Barista Creations',name:'Caramello'},
+    {cat:'Barista Creations',name:'Nocciola'},
+    {cat:'Barista Creations',name:'Vaniglia'},
+    {cat:'Barista Creations',name:'Vaniglia Decaffeinato'},
+    {cat:'Barista Creations',name:'Cioccolatino'},
+    {cat:'Decaffeinati',name:'Volluto Decaffeinato'},
+    {cat:'Compostabili',name:'Ispirazione Sicilia'},
+    {cat:'Compostabili',name:'Ispirazione Emilia'},
+    {cat:'Compostabili',name:'Ispirazione Aosta'},
+    {cat:'Compostabili',name:'Ispirazione Palermo'},
+    {cat:'Compostabili',name:'Peru Organic'},
+    {cat:'Compostabili',name:'Decaffeinato'},
+    {cat:'Master Origins',name:'Indonesia'},
+    {cat:'Master Origins',name:'Ethiopia'},
+    {cat:'Master Origins',name:'Nicaragua'},
+    {cat:'Master Origins',name:'India'},
+    {cat:'Master Origins',name:'Colombia'},
+    {cat:'The Original Collection',name:'Cosi'},
+    {cat:'The Original Collection',name:'Capriccio'},
+    {cat:'The Original Collection',name:'Volluto'},
+    {cat:'Stagionali autunnali',name:'Pumpkin Spice Cake'},
+    {cat:'Stagionali autunnali',name:'Maple Pecan'},
+    {cat:'Stagionali / Festive',name:'Festive Espresso'},
+    {cat:'Stagionali / Festive',name:'Sweet Almond & Hibiscus'},
+    {cat:'Stagionali / Festive',name:'Cinnamon & Candied Tamarind'},
+  ],
+  vertuo:[
+    {cat:'Ristretto / Espresso',name:'Ristretto Classico'},
+    {cat:'Ristretto / Espresso',name:'Ristretto Intenso'},
+    {cat:'Ristretto / Espresso',name:'Il Caffè'},
+    {cat:'Ristretto / Espresso',name:'Diavolitto'},
+    {cat:'Ristretto / Espresso',name:'Orafio'},
+    {cat:'Ristretto / Espresso',name:'Altissio'},
+    {cat:'Ristretto / Espresso',name:'Altissio Decaffeinato'},
+    {cat:'Ristretto / Espresso',name:'Voltesso'},
+    {cat:'Ristretto / Espresso',name:'Toccanto'},
+    {cat:'Ristretto / Espresso',name:'Bianco Piccolo For Milk'},
+    {cat:'Ristretto / Espresso',name:'Master Origins Peru Organic'},
+    {cat:'Double Espresso',name:'Double Espresso Dolce'},
+    {cat:'Double Espresso',name:'Double Espresso Chiaro'},
+    {cat:'Double Espresso',name:'Double Espresso Chiaro Decaffeinato'},
+    {cat:'Double Espresso',name:'Double Espresso Scuro'},
+    {cat:'Gran Lungo',name:'Fortado'},
+    {cat:'Gran Lungo',name:'Fortado Decaffeinato'},
+    {cat:'Gran Lungo',name:'Arondio'},
+    {cat:'Gran Lungo',name:'Inizio'},
+    {cat:'Gran Lungo',name:'Master Origins Costa Rica'},
+    {cat:'Gran Lungo',name:'Master Origins Ethiopia'},
+    {cat:'Mug / Coffee',name:'Intenso'},
+    {cat:'Mug / Coffee',name:'Stormio'},
+    {cat:'Mug / Coffee',name:'Odacio'},
+    {cat:'Mug / Coffee',name:'Melozio'},
+    {cat:'Mug / Coffee',name:'Melozio Decaffeinato'},
+    {cat:'Mug / Coffee',name:'Solelio'},
+    {cat:'Mug / Coffee',name:'Half Caffeinato'},
+    {cat:'Mug / Coffee',name:'Master Origins Mexico'},
+    {cat:'Mug / Coffee',name:'Master Origins Colombia'},
+    {cat:'Mug / Coffee',name:'Master Origins El Salvador'},
+    {cat:'Barista / Aromatizzati',name:'Bianco Doppio For Milk'},
+    {cat:'Barista / Aromatizzati',name:'Bianco Forte'},
+    {cat:'Barista / Aromatizzati',name:'Rich Chocolate'},
+    {cat:'Barista / Aromatizzati',name:'Roasted Hazelnut'},
+    {cat:'Barista / Aromatizzati',name:'Golden Caramel'},
+    {cat:'Barista / Aromatizzati',name:'Sweet Vanilla'},
+    {cat:'Barista / Aromatizzati',name:'Sweet Vanilla Decaffeinato'},
+    {cat:'Coffee+ / Funzionali / Freddi',name:'Ginseng Delight'},
+    {cat:'Coffee+ / Funzionali / Freddi',name:'Vividà'},
+    {cat:'Coffee+ / Funzionali / Freddi',name:'Stormio GO'},
+    {cat:'Coffee+ / Funzionali / Freddi',name:'Melozio GO'},
+    {cat:'Coffee+ / Funzionali / Freddi',name:'Active B6'},
+    {cat:'Coffee+ / Funzionali / Freddi',name:'Ice Leggero'},
+    {cat:'Coffee+ / Funzionali / Freddi',name:'Ice Forte'},
+    {cat:'Coffee+ / Funzionali / Freddi',name:'Cold Brew Style Intense'},
+    {cat:'Limited / Stagionali estivi',name:'Pistachio Vanilla'},
+    {cat:'Limited / Stagionali estivi',name:'Coconut Vanilla Over Ice'},
+    {cat:'Limited / Stagionali estivi',name:'White Chocolate & Strawberry'},
+    {cat:'Limited / Stagionali estivi',name:'French Lavender & Vanilla Decaffeinato'},
+    {cat:'Limited / Stagionali estivi',name:'Yuzu Vanilla Over Ice'},
+    {cat:'Carafe',name:'Carafe Pour-Over Style Intense'},
+    {cat:'Stagionali autunnali',name:'Pumpkin Spice Cake'},
+    {cat:'Stagionali autunnali',name:'Maple Pecan'},
+    {cat:'Stagionali / Festive',name:'Festive Double Espresso'},
+    {cat:'Stagionali / Festive',name:'Sweet Almond & Hibiscus'},
+    {cat:'Stagionali / Festive',name:'Cinnamon & Candied Tamarind'},
+    {cat:'Stagionali / Festive',name:'Peppermint Pinwheel'},
+    {cat:'Stagionali / Festive',name:'Gingerbread'},
+  ]
+};
+
+// ── DEFAULT DATA ─────────────────────────────────────────────
+const DEFAULT={
+  original:[
+    {id:1,name:'Ristretto',qty:14,intensity:10,expiry:'2026-08',weeklyRate:3},
+    {id:2,name:'Espresso',qty:22,intensity:8,expiry:'2026-12',weeklyRate:2},
+    {id:3,name:'Livanto',qty:10,intensity:6,expiry:'2026-10',weeklyRate:2},
+    {id:4,name:'Arpeggio',qty:6,intensity:9,expiry:'2026-06',weeklyRate:2},
+    {id:5,name:'Roma',qty:3,intensity:8,expiry:'2026-09',weeklyRate:2},
+  ],
+  vertuo:[
+    {id:10,name:'Odacio',qty:12,intensity:7,expiry:'2026-11',weeklyRate:2},
+    {id:11,name:'Melozio',qty:8,intensity:6,expiry:'2026-08',weeklyRate:2},
+    {id:12,name:'Il Caffè',qty:2,intensity:7,expiry:'2026-07',weeklyRate:1},
+    {id:13,name:'Altissio',qty:20,intensity:11,expiry:'2027-01',weeklyRate:3},
+    {id:14,name:'Diavolitto',qty:3,intensity:11,expiry:'2026-09',weeklyRate:2},
+  ]
+};
+
+// ── RECIPES ──────────────────────────────────────────────────
+const RECIPES=[
+  // HOT
+  {name:'Espresso Classico',capsules:['Ristretto','Espresso','Roma','Arpeggio','Altissio','Il Caffè','Toccanto'],line:'both',tag:'hot',icon:'☕',
+   ingredients:['40 ml caffè (1 capsula)'],
+   steps:['Preriscalda la tazza con acqua calda.','Estrai l\'espresso direttamente nella tazza.','Servi subito.']},
+  {name:'Ristretto Puro',capsules:['Ristretto','Kazaar','Napoli','India','Ispirazione Palermo','Ristretto Classico','Ristretto Intenso','Diavolitto','Toccanto'],line:'both',tag:'hot',icon:'☕',
+   ingredients:['25 ml ristretto (1 capsula)'],
+   steps:['Preriscalda la tazzina.','Estrai il ristretto direttamente nella tazzina.','Servi immediatamente per godere dell\'aroma pieno.']},
+  {name:'Lungo Classico',capsules:['Livanto','Cosi','Capriccio','Stockholm Lungo','Cape Town Lungo','Vienna Lungo','Buenos Aires Lungo','Shanghai Lungo','Tokyo Vivalto Lungo','Ethiopia','Nicaragua','Colombia','Fortado','Arondio','Inizio'],line:'both',tag:'hot',icon:'☕',
+   ingredients:['110 ml caffè lungo (1 capsula)'],
+   steps:['Preriscalda la tazza grande.','Estrai il lungo a piena estrazione.','Servi caldo, eventualmente con una buccia di limone.']},
+  {name:'Caffè Macchiato',capsules:['Ristretto','Espresso','Roma','Arpeggio','Kazaar','Diavolitto','Altissio','Toccanto'],line:'both',tag:'hot',icon:'☕',
+   ingredients:['40 ml espresso (1 capsula)','1 cucchiaino latte schiumato'],
+   steps:['Estrai l\'espresso nella tazzina.','Aggiungi una piccola nuvola di schiuma di latte sopra.','Servi subito.']},
+  {name:'Gran Lungo Aromatico',capsules:['Livanto','Fortado','Arondio','Inizio','Master Origins Costa Rica','Master Origins Ethiopia'],line:'both',tag:'hot',icon:'☕',
+   ingredients:['150 ml caffè gran lungo','Buccia di limone','Zucchero a piacere'],
+   steps:['Estrai il Gran Lungo nella tazza grande.','Aggiungi un ricciolo di buccia di limone.','Dolcifica a piacere e servi caldo.']},
+  {name:'Caffè al Cardamomo',capsules:['Istanbul Espresso','India','Kazaar','Ristretto Intenso'],line:'both',tag:'hot',icon:'☕',
+   ingredients:['40 ml espresso','½ cucchiaino cardamomo macinato','Zucchero a piacere'],
+   steps:['Estrai l\'espresso nella tazza.','Aggiungi il cardamomo e mescola.','Dolcifica a piacere e servi caldo.']},
+  {name:'Affogato al Caffè',capsules:['Ristretto','Kazaar','Napoli','Diavolitto','Altissio','Ristretto Intenso','Toccanto'],line:'both',tag:'hot',icon:'🍨',
+   ingredients:['25 ml ristretto bollente','1 pallina gelato alla vaniglia'],
+   steps:['Metti la pallina di gelato in una coppetta fredda.','Estrai il ristretto bollente e versalo subito sopra il gelato.','Servi immediatamente — il contrasto caldo/freddo è l\'essenza del piatto.']},
+  {name:'Mug Caldo Intenso',capsules:['Intenso','Stormio','Fortado','Bianco Forte','Bianco Doppio For Milk'],line:'vertuo',tag:'hot',icon:'☕',
+   ingredients:['230 ml caffè Mug Vertuo','Zucchero a piacere'],
+   steps:['Estrai il caffè nel mug grande.','Mescola e dolcifica a piacere.','Ideale con un biscotto o una brioche.']},
+  // MILK
+  {name:'Cappuccino',capsules:['Ristretto','Espresso','Arpeggio','Roma','Altissio','Scuro','Toccanto'],line:'both',tag:'milk',icon:'🥛',
+   ingredients:['40 ml caffè (1 capsula)','100 ml latte freddo intero'],
+   steps:['Eroga l\'espresso nella tazza.','Scalda e schiumata il latte con Aeroccino.','Versa la schiuma sull\'espresso.','Completa con un pizzico di cacao (facoltativo).']},
+  {name:'Latte Macchiato',capsules:['Ristretto','Espresso','Livanto','Odacio','Il Caffè','Melozio'],line:'both',tag:'milk',icon:'🥛',
+   ingredients:['40 ml caffè (1 capsula)','150 ml latte freddo'],
+   steps:['Scalda e schiumata 150 ml di latte.','Versa la schiuma in un bicchiere alto.','Estrai l\'espresso e versalo lentamente sopra.','La "macchia" scura in superficie è il segno distintivo.']},
+  {name:'Flat White',capsules:['Ristretto','Altissio','Il Caffè','Ristretto Classico','Corto','Toccanto'],line:'both',tag:'milk',icon:'🥛',
+   ingredients:['50 ml ristretto doppio (2 capsule)','90 ml latte intero microschiumato'],
+   steps:['Estrai due ristretto in una tazza piccola.','Scalda 90 ml di latte fino a microschiumatura fine.','Versa il latte con movimento circolare sul caffè.','Il rapporto caffè/latte deve essere 1:3.']},
+  {name:'Lungo al Latte',capsules:['Livanto','Chiaro','Vienna Lungo','Fortado','Arondio','Bianco Doppio For Milk'],line:'both',tag:'milk',icon:'🥛',
+   ingredients:['110 ml caffè lungo','80 ml latte caldo schiumato'],
+   steps:['Estrai il Lungo nella tazza grande.','Scalda e schiumata 80 ml di latte.','Versa il latte sull\'espresso.','Facoltativo: un pizzico di cioccolato grattugiato.']},
+  {name:'Cappuccino Freddo',capsules:['Ristretto','Espresso','Roma','Arpeggio','Toccanto'],line:'original',tag:'cold',icon:'🧊',
+   ingredients:['120 ml caffè (3 capsule da 40 ml)','150 ml latte freddo','Pizzico di cannella o cacao'],
+   steps:['Estrai 3 tazze di espresso e lascia raffreddare.','Prepara la schiuma di latte freddo con Aeroccino.','Versa il caffè freddo nel bicchiere con ghiaccio.','Aggiungi la schiuma e completa con cannella.']},
+  {name:'Mocaccino',capsules:['Ristretto','Espresso','Arpeggio','Altissio','Rich Chocolate','Toccanto'],line:'both',tag:'milk',icon:'🍫',
+   ingredients:['40 ml caffè','100 ml latte intero','1 cucchiaio cacao amaro','1 cucchiaino zucchero (facoltativo)'],
+   steps:['Sciogli il cacao con qualche goccia di latte caldo.','Aggiungi il latte caldo schiumato.','Estrai l\'espresso sopra il composto.','Decora con panna o cacao in polvere.']},
+  {name:'Caramel Latte',capsules:['Caramello','Golden Caramel','Livanto','Melozio'],line:'both',tag:'milk',icon:'🥛',
+   ingredients:['40 ml caffè aromatizzato','120 ml latte intero caldo','1 cucchiaino sciroppo caramello'],
+   steps:['Scalda e schiumata il latte.','Aggiungi lo sciroppo di caramello al latte.','Estrai il caffè sopra.','Decora con un filo di caramello.']},
+  {name:'Hazelnut Latte',capsules:['Nocciola','Roasted Hazelnut','Arpeggio','Altissio'],line:'both',tag:'milk',icon:'🥛',
+   ingredients:['40 ml caffè','120 ml latte intero','1 cucchiaino sciroppo nocciola'],
+   steps:['Scalda e schiumata il latte.','Aggiungi lo sciroppo di nocciola.','Estrai il caffè sopra.','Decora con granella di nocciole.']},
+  {name:'Vanilla Latte',capsules:['Vaniglia','Sweet Vanilla','Livanto','Cosi'],line:'both',tag:'milk',icon:'🥛',
+   ingredients:['40 ml caffè','120 ml latte intero','½ cucchiaino estratto vaniglia'],
+   steps:['Scalda il latte con l\'estratto di vaniglia.','Schiumata fino a ottenere una schiuma densa.','Estrai il caffè nella tazza.','Versa il latte vanigliato sopra.']},
+  {name:'Chocolate Mug',capsules:['Rich Chocolate','Cioccolatino','Intenso','Stormio'],line:'both',tag:'milk',icon:'🍫',
+   ingredients:['230 ml caffè Mug','2 cucchiai cioccolato fondente grattugiato','Panna montata'],
+   steps:['Estrai il caffè nel mug.','Aggiungi il cioccolato e mescola fino a scioglierlo.','Completa con panna montata e cacao in polvere.']},
+  {name:'Bianco Doppio con Latte',capsules:['Bianco Doppio For Milk','Bianco Forte','Bianco Piccolo For Milk'],line:'vertuo',tag:'milk',icon:'🥛',
+   ingredients:['230 ml caffè Bianco For Milk','150 ml latte caldo schiumato'],
+   steps:['Estrai il caffè nel mug grande.','Scalda e schiumata abbondante latte.','Versalo sopra il caffè.','Il profilo è pensato per resistere al latte — ideale per un latte art.']},
+  // COLD
+  {name:'Ristretto on Ice',capsules:['Ristretto','Altissio','Il Caffè','Ristretto Classico','Ristretto Intenso','Kazaar','Toccanto'],line:'both',tag:'cold',icon:'🧊',
+   ingredients:['25 ml ristretto (1 capsula)','6 cubetti di ghiaccio','Fettina di limone (facoltativa)'],
+   steps:['Riempi un bicchiere con i cubetti di ghiaccio.','Estrai il Ristretto direttamente sopra il ghiaccio.','Mescola delicatamente e aggiungi il limone.']},
+  {name:'Espresso Tonic',capsules:['Ristretto','Espresso','Roma','Odacio','Diavolitto','Napoli','Toccanto'],line:'both',tag:'cold',icon:'🫧',
+   ingredients:['40 ml espresso freddo','150 ml acqua tonica ghiacciata','Fettina d\'arancia'],
+   steps:['Estrai l\'espresso e lascialo raffreddare.','Versa l\'acqua tonica in un bicchiere con ghiaccio.','Aggiungi l\'espresso lentamente dall\'alto.','Guarnisci con una fettina d\'arancia.']},
+  {name:'Caffè Freddo Shakerato',capsules:['Espresso','Ristretto','Odacio','Il Caffè','Toccanto'],line:'both',tag:'cold',icon:'🧊',
+   ingredients:['40 ml espresso','Ghiaccio tritato','1 cucchiaino zucchero di canna'],
+   steps:['Estrai l\'espresso e lascialo intiepidire.','Metti ghiaccio tritato nello shaker.','Aggiungi caffè e zucchero, agita energicamente.','Filtra in un bicchiere freddo.']},
+  {name:'Vertuo Cold Brew Style',capsules:['Odacio','Melozio','Il Caffè','Cold Brew Style Intense','Stormio'],line:'vertuo',tag:'cold',icon:'🧊',
+   ingredients:['230 ml caffè Mug Vertuo','180 g ghiaccio','90 ml acqua fredda'],
+   steps:['Estrai il caffè Mug e lascia raffreddare.','Riempi un bicchiere alto con il ghiaccio.','Versa l\'acqua fredda nel bicchiere.','Aggiungi lentamente il caffè dall\'alto.']},
+  {name:'Ice Leggero Splash',capsules:['Ice Leggero','Ice Forte','Solelio','Vividà'],line:'vertuo',tag:'cold',icon:'🧊',
+   ingredients:['1 capsula Ice Leggero o Forte','Ghiaccio Nespresso','Splash acqua frizzante (facoltativo)'],
+   steps:['Estrai la capsula direttamente sul ghiaccio Nespresso.','Aggiungi uno splash di acqua frizzante per vivacizzare.','Servi subito con una cannuccia.']},
+  {name:'Lungo Freddo con Menta',capsules:['Stockholm Lungo','Cape Town Lungo','Ethiopia','Nicaragua','Arondio','Inizio'],line:'both',tag:'cold',icon:'🧊',
+   ingredients:['150 ml lungo freddo','Ghiaccio','Foglie di menta fresca','Fettina di lime'],
+   steps:['Estrai il lungo e lascia raffreddare in frigo 15 min.','Riempi un bicchiere di ghiaccio.','Versa il lungo, aggiungi menta e lime.','Mescola delicatamente e servi.']},
+  {name:'Espresso Lemonade',capsules:['Espresso','Roma','Paris Espresso','Rio de Janeiro Espresso','Livanto'],line:'original',tag:'cold',icon:'🍋',
+   ingredients:['40 ml espresso freddo','150 ml limonata artigianale','Ghiaccio','Fettina limone'],
+   steps:['Estrai l\'espresso e lascialo raffreddare.','Riempi un bicchiere con ghiaccio e limonata.','Versa l\'espresso dall\'alto per effetto a strati.','Decora con una fettina di limone.']},
+  {name:'Pistachio Ice Latte',capsules:['Pistachio Vanilla','Altissio','Ristretto Intenso'],line:'vertuo',tag:'cold',icon:'🍵',
+   ingredients:['40 ml espresso freddo','150 ml latte di pistacchio','Ghiaccio','1 cucchiaino pasta pistacchio'],
+   steps:['Mescola il latte di pistacchio con la pasta di pistacchio.','Riempi un bicchiere di ghiaccio e versa il latte.','Aggiungi l\'espresso freddo dall\'alto.','Decora con granella di pistacchi.']},
+  {name:'Coconut Cold Coffee',capsules:['Coconut Vanilla Over Ice','Melozio','Solelio'],line:'vertuo',tag:'cold',icon:'🥥',
+   ingredients:['230 ml caffè freddo','100 ml latte di cocco','Ghiaccio','Scaglie cocco'],
+   steps:['Estrai il caffè e lascia raffreddare.','Riempi un bicchiere di ghiaccio.','Aggiungi il latte di cocco e il caffè.','Decora con scaglie di cocco tostate.']},
+  // DAL MONDO
+  {name:'Caffè Turco',capsules:['Istanbul Espresso','Kazaar','Napoli','India','Ristretto Intenso'],line:'both',tag:'world',icon:'🇹🇷',
+   ingredients:['25 ml ristretto (1 capsula)','½ cucchiaino cardamomo','Zucchero a piacere'],
+   steps:['Estrai il ristretto nella tazzina.','Aggiungi il cardamomo e mescola.','Lascia riposare 30 secondi prima di bere.']},
+  {name:'Cà Phê Sữa Đá',capsules:['Intenso','Stormio','Odacio','Il Caffè','Fortado'],line:'both',tag:'world',icon:'🇻🇳',
+   ingredients:['60 ml caffè forte (2 capsule)','3 cucchiai latte condensato zuccherato','Ghiaccio abbondante'],
+   steps:['Estrai il caffè forte e lascialo raffreddare.','Metti il latte condensato in un bicchiere alto.','Aggiungi il ghiaccio e versa il caffè sopra.','Mescola solo al momento di bere.']},
+  {name:'Frappé Greco',capsules:['Espresso','Roma','Livanto','Odacio','Melozio'],line:'both',tag:'world',icon:'🇬🇷',
+   ingredients:['40 ml espresso freddo','1 cucchiaino caffè solubile','2 cucchiaini zucchero','Ghiaccio','Latte facoltativo'],
+   steps:['Agita nel shaker caffè solubile, zucchero e goccio d\'acqua fino a schiuma.','Versa in un bicchiere con ghiaccio.','Aggiungi l\'espresso e latte a piacere.']},
+  {name:'Café Cubano',capsules:['Ristretto','Kazaar','Napoli','Diavolitto','Toccanto'],line:'both',tag:'world',icon:'🇨🇺',
+   ingredients:['25 ml ristretto (1 capsula)','1 cucchiaino zucchero di canna','Scorza limone'],
+   steps:['Metti lo zucchero nella tazzina.','Estrai il ristretto direttamente sullo zucchero.','Mescola velocemente finché lo zucchero forma una crema dorata.','Servi con scorza di limone.']},
+  {name:'Flat White Australiano',capsules:['Ristretto','Altissio','Il Caffè','Ristretto Classico','Toccanto'],line:'both',tag:'world',icon:'🇦🇺',
+   ingredients:['50 ml ristretto doppio (2 capsule)','100 ml latte intero microschiumato'],
+   steps:['Estrai il doppio ristretto in una tazza piccola da 150ml.','Scalda il latte a 65°C con microschiumatura finissima.','Versa con movimento rotatorio dal centro.']},
+  {name:'Espresso Romano',capsules:['Roma','Ristretto','Napoli','Espresso','Toccanto'],line:'original',tag:'world',icon:'🇮🇹',
+   ingredients:['40 ml espresso (1 capsula)','Fettina di limone fresco'],
+   steps:['Strofina il limone sul bordo della tazzina.','Estrai l\'espresso.','Servi con la fettina a lato — non va messa dentro.']},
+  {name:'Café de Olla',capsules:['Buenos Aires Lungo','Livanto','Capriccio','Melozio'],line:'both',tag:'world',icon:'🇲🇽',
+   ingredients:['150 ml caffè lungo','1 stecca cannella','2 chiodi di garofano','Piloncillo o zucchero grezzo'],
+   steps:['Scalda l\'acqua con cannella e chiodi di garofano 5 minuti.','Estrai il caffè e aggiungilo al liquido speziato.','Dolcifica con piloncillo.','Filtra e servi caldo.']},
+  {name:'Yuzu Espresso',capsules:['Yuzu Vanilla Over Ice','Ristretto Classico','Orafio'],line:'vertuo',tag:'world',icon:'🇯🇵',
+   ingredients:['40 ml espresso freddo','30 ml succo yuzu','Ghiaccio','Scorza agrumi'],
+   steps:['Estrai l\'espresso e lascialo raffreddare.','Mescola succo yuzu con miele.','Riempi un bicchiere di ghiaccio e aggiungi il mix yuzu.','Versa l\'espresso dall\'alto senza mescolare.']},
+  // STARBUCKS STYLE
+  {name:'Frappuccino Caffè',capsules:['Espresso','Ristretto','Roma','Intenso','Odacio'],line:'both',tag:'starbucks',icon:'🧋',
+   ingredients:['60 ml espresso freddo (2 capsule)','200 ml latte intero','100 g ghiaccio','2 cucchiai sciroppo vaniglia','Panna montata'],
+   steps:['Frulla ghiaccio, latte, caffè e sciroppo di vaniglia.','Versa in un bicchiere grande.','Completa con panna montata e caramello.']},
+  {name:'Pumpkin Spice Latte',capsules:['Pumpkin Spice Cake','Caramello','Livanto','Melozio'],line:'both',tag:'starbucks',icon:'🎃',
+   ingredients:['40 ml espresso','150 ml latte intero','2 cucchiai purea zucca','Cannella, noce moscata, zenzero','Panna montata'],
+   steps:['Scalda il latte con la purea di zucca e le spezie.','Schiumata il composto.','Estrai l\'espresso nella tazza grande.','Versa il latte speziato e completa con panna.']},
+  {name:'Caramel Macchiato',capsules:['Caramello','Golden Caramel','Ristretto','Altissio'],line:'both',tag:'starbucks',icon:'🍮',
+   ingredients:['40 ml espresso','150 ml latte intero','Sciroppo vaniglia','Caramello liquido'],
+   steps:['Versa il latte con sciroppo vaniglia nella tazza.','Scalda e schiumata il latte.','Estrai l\'espresso sopra (non mescolare).','Disegna una croce di caramello sulla schiuma.']},
+  {name:'Brown Sugar Oat Espresso',capsules:['Ristretto','Espresso','Altissio','Diavolitto'],line:'both',tag:'starbucks',icon:'🤎',
+   ingredients:['60 ml espresso freddo (2 capsule)','200 ml latte di avena','2 cucchiai sciroppo zucchero di canna','Cannella','Ghiaccio'],
+   steps:['Agita nel shaker: espresso, sciroppo e cannella con ghiaccio.','Riempi un bicchiere di ghiaccio fresco.','Versa il latte di avena.','Aggiungi il mix shakerato sopra.']},
+  {name:'Vanilla Sweet Cream Cold',capsules:['Vaniglia','Sweet Vanilla','Cosi','Inizio'],line:'both',tag:'starbucks',icon:'🍦',
+   ingredients:['150 ml caffè freddo forte','50 ml panna fresca','1 cucchiaio sciroppo vaniglia','Ghiaccio'],
+   steps:['Estrai il caffè e lascialo raffreddare.','Monta leggermente la panna con lo sciroppo vaniglia.','Riempi un bicchiere di ghiaccio e aggiungi il caffè.','Versa la vanilla cream sopra senza mescolare.']},
+  {name:'Cinnamon Dolce Latte',capsules:['Cinnamon & Candied Tamarind','Pumpkin Spice Cake','Caramello','Livanto'],line:'both',tag:'starbucks',icon:'🍂',
+   ingredients:['40 ml espresso','150 ml latte intero','Sciroppo cannella','Panna montata','Zucchero cannella'],
+   steps:['Estrai l\'espresso nella tazza.','Scalda il latte con sciroppo di cannella.','Versa il latte sul caffè.','Completa con panna e zucchero alla cannella.']},
+  {name:'Mocha Frappuccino',capsules:['Intenso','Stormio','Rich Chocolate','Altissio'],line:'both',tag:'starbucks',icon:'🍫',
+   ingredients:['60 ml espresso freddo','200 ml latte intero','100 g ghiaccio','3 cucchiai sciroppo cioccolato','Panna montata'],
+   steps:['Frulla ghiaccio, latte, caffè e sciroppo al cioccolato.','Versa in un bicchiere grande.','Completa con panna e filo di cioccolato.']},
+  {name:'Hazelnut Frappuccino',capsules:['Nocciola','Roasted Hazelnut','Arpeggio','Altissio'],line:'both',tag:'starbucks',icon:'🌰',
+   ingredients:['60 ml espresso freddo','200 ml latte intero','100 g ghiaccio','3 cucchiai sciroppo nocciola','Panna montata'],
+   steps:['Frulla ghiaccio, latte, caffè e sciroppo di nocciola.','Versa in un bicchiere grande.','Completa con panna e granella di nocciole.']},
+];
+
+
+// ── SUPABASE CONFIG ───────────────────────────────────────────
+var SUPA_URL='https://wrvucusnngsffgxdhmaw.supabase.co';
+var SUPA_KEY='sb_publishable_OwDIAxGlueNh0Xc2HSj8UA_XMwJN4fF';
+var currentUser=null;
+var memData={original:[],vertuo:[]};
+var isSaving=false;
+
+async function supaFetch(path,method,body,extraHeaders){
+  var headers=Object.assign({'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':'Bearer '+(currentUser?currentUser.access_token:SUPA_KEY)},extraHeaders||{});
+  var opts={method:method||'GET',headers:headers};
+  if(body) opts.body=JSON.stringify(body);
+  var r=await fetch(SUPA_URL+path,opts);
+  if(r.status===204||r.status===201) return [];
+  return r.json();
+}
+
+function getData(){ return memData; }
+
+async function loadFromCloud(){
+  if(!currentUser) return;
+  try{
+    var rows=await supaFetch('/rest/v1/capsules?select=*&user_id=eq.'+currentUser.id,'GET');
+    if(!Array.isArray(rows)) rows=[];
+    memData={original:[],vertuo:[]};
+    rows.forEach(function(r){
+      var line=r.line==='vertuo'?'vertuo':'original';
+      memData[line].push({
+        id:r.id,
+        name:r.name,qty:r.qty,intensity:r.intensity,
+        expiry:r.expiry,weeklyRate:r.weekly_rate||1
+      });
+    });
+  }catch(e){ console.error('loadFromCloud',e); }
+}
+
+async function seedDefaults(){
+  var all=[];
+  DEFAULT.original.forEach(function(c){ all.push({user_id:currentUser.id,line:'original',name:c.name,qty:c.qty,intensity:c.intensity,expiry:c.expiry,weekly_rate:c.weeklyRate}); });
+  DEFAULT.vertuo.forEach(function(c){ all.push({user_id:currentUser.id,line:'vertuo',name:c.name,qty:c.qty,intensity:c.intensity,expiry:c.expiry,weekly_rate:c.weeklyRate}); });
+  await supaFetch('/rest/v1/capsules','POST',all,{'Prefer':'return=minimal'});
+  await loadFromCloud();
+}
+
+async function loadProfile(){
+  if(!currentUser) return;
+  try{
+    var rows=await supaFetch('/rest/v1/profiles?select=name&id=eq.'+currentUser.id,'GET');
+    if(Array.isArray(rows) && rows.length>0 && rows[0].name){
+      currentUser.name=rows[0].name;
+    }
+  }catch(e){ console.error('loadProfile',e); }
+}
+
+async function saveProfile(name){
+  if(!currentUser) return;
+  try{
+    await supaFetch('/rest/v1/profiles','POST',
+      {id:currentUser.id, name:name},
+      {'Prefer':'resolution=merge-duplicates,return=minimal'}
+    );
+  }catch(e){ console.error('saveProfile',e); }
+}
+
+async function saveData(d){
+  memData=d;
+  if(!currentUser||isSaving) return;
+  isSaving=true;
+  try{
+    // delete all then reinsert — wrapped to prevent race conditions
+    await supaFetch('/rest/v1/capsules?user_id=eq.'+currentUser.id,'DELETE');
+    var all=[];
+    d.original.forEach(function(c){ all.push({user_id:currentUser.id,line:'original',name:c.name,qty:c.qty,intensity:c.intensity||getCapsuleIntensity(c.name),expiry:c.expiry,weekly_rate:c.weeklyRate||1}); });
+    d.vertuo.forEach(function(c){ all.push({user_id:currentUser.id,line:'vertuo',name:c.name,qty:c.qty,intensity:c.intensity||getCapsuleIntensity(c.name),expiry:c.expiry,weekly_rate:c.weeklyRate||1}); });
+    if(all.length) await supaFetch('/rest/v1/capsules','POST',all,{'Prefer':'return=minimal'});
+    // reload to get fresh IDs from DB
+    await loadFromCloud();
+  }catch(e){ console.error('saveData',e); }
+  finally{ isSaving=false; }
+}
+
+// ── HELPERS ──────────────────────────────────────────────────
+function expiryStatus(e){
+  const n=new Date(), x=new Date(e+'-01'), d=(x-n)/(1000*60*60*24*30);
+  return d<0?'danger':d<3?'warn':'ok';
+}
+function expiryLabel(e){
+  const s=expiryStatus(e);
+  const l={ok:'OK',warn:'In scadenza',danger:'Scaduta'};
+  const c={ok:'badge-ok',warn:'badge-warn',danger:'badge-danger'};
+  return '<span class="badge '+c[s]+'">'+l[s]+'</span>';
+}
+function weeksLeft(c){ return c.weeklyRate>0?Math.floor(c.qty/c.weeklyRate):999; }
+function qtyLevel(c){ return c.qty<=3?'low':c.qty<=7?'medium':'ok'; }
+
+// ── POPULATE DROPDOWN ────────────────────────────────────────
+function populateCapsuleSelect(){
+  var sel=document.getElementById('inName');
+  if(!sel) return;
+  var items=CATALOGUE[currentLine];
+  var groups={};
+  items.forEach(function(i){ if(!groups[i.cat]) groups[i.cat]=[]; groups[i.cat].push(i.name); });
+  sel.innerHTML='<option value="">— seleziona capsula —</option>';
+  Object.keys(groups).forEach(function(cat){
+    var og=document.createElement('optgroup');
+    og.label=cat;
+    groups[cat].forEach(function(n){
+      var o=document.createElement('option');
+      o.value=n; o.textContent=n;
+      og.appendChild(o);
+    });
+    sel.appendChild(og);
+  });
+}
+
+// ── RENDER METRICS ───────────────────────────────────────────
+function renderMetrics(caps){
+  var total=caps.reduce(function(s,c){return s+c.qty;},0);
+  var expSoon=caps.filter(function(c){return expiryStatus(c.expiry)!=='ok';}).length;
+  var lowStock=caps.filter(function(c){return c.qty<5;}).length;
+  var avgInt=caps.length?Math.round(caps.reduce(function(s,c){return s+c.intensity;},0)/caps.length):0;
+  document.getElementById('metricsRow').innerHTML=
+    '<div class="metric"><div class="metric-label">Capsule totali</div><div class="metric-value">'+total+'</div><div class="metric-sub">'+caps.length+' tipologie</div></div>'+
+    '<div class="metric"><div class="metric-label">Scorte basse</div><div class="metric-value" style="color:'+(lowStock>0?'#A32D2D':'inherit')+'">'+lowStock+'</div><div class="metric-sub">meno di 5 capsule</div></div>'+
+    '<div class="metric"><div class="metric-label">In scadenza</div><div class="metric-value" style="color:'+(expSoon>0?'#854F0B':'inherit')+'">'+expSoon+'</div><div class="metric-sub">entro 3 mesi</div></div>'+
+    '<div class="metric"><div class="metric-label">Intensità media</div><div class="metric-value">'+avgInt+'</div><div class="metric-sub">scala 1–13</div></div>';
+}
+
+// ── RENDER TABLE ─────────────────────────────────────────────
+function renderTable(caps){
+  var max=Math.max.apply(null,caps.map(function(c){return c.qty;}).concat([1]));
+  document.getElementById('inventoryBody').innerHTML=caps.map(function(c,i){
+    var pct=Math.round(c.qty/max*100);
+    var lvl=qtyLevel(c);
+    var fc=lvl==='low'?'low':lvl==='medium'?'medium':'';
+    var target=c.weeklyRate*4;
+    var needed=Math.max(0,target-c.qty);
+    var boxes=Math.ceil(needed/10);
+    var boxCell;
+    if(boxes===0){
+      boxCell='<span style="font-size:12px;color:#3B6D11;font-weight:500">✓ scorta ok</span>';
+    } else {
+      var urg=boxes>=2?'#A32D2D':'#854F0B';
+      boxCell='<span style="font-weight:600;font-size:14px;color:'+urg+'">'+boxes+'</span><span style="font-size:12px;color:var(--text2);margin-left:4px">box</span><span style="font-size:11px;color:var(--text3);margin-left:5px">('+boxes*10+' caps.)</span>';
+    }
+    return '<tr>'+
+      '<td><span class="dot" style="background:'+COLORS[i%COLORS.length]+'"></span> '+c.name+'</td>'+
+      '<td><span class="intensity-bar"><span class="intensity-fill" style="width:'+Math.round(c.intensity/13*100)+'%;background:'+COLORS[i%COLORS.length]+'"></span></span> <span style="font-size:12px;color:var(--text2)">'+c.intensity+'</span></td>'+
+      '<td><div class="qty-cell"><span style="font-weight:500;min-width:22px">'+c.qty+'</span><div class="qty-bar"><div class="qty-fill '+fc+'" style="width:'+pct+'%"></div></div></div></td>'+
+      '<td><input type="number" min="1" max="99" value="'+c.weeklyRate+'" onchange="updateRate(\''+c.id+'\',this.value)" style="width:54px;padding:4px 6px;font-size:13px;text-align:center;" aria-label="Consumo settimanale '+c.name+'"/><span style="font-size:12px;color:var(--text2);margin-left:4px">sett.</span></td>'+
+      '<td>'+boxCell+'</td>'+
+      '<td>'+c.expiry.replace('-','/')+'</td>'+
+      '<td>'+expiryLabel(c.expiry)+'</td>'+
+      '<td style="white-space:nowrap">'+
+        '<button class="btn-consume" onclick="consumeCapsule(\''+c.id+'\')" aria-label="Consuma una '+c.name+'" title="Ho bevuto una capsula">−1</button>'+
+        '<button class="btn-del" onclick="deleteCapsule(\''+c.id+'\')" aria-label="Elimina '+c.name+'" style="margin-left:4px"><i class="ti ti-trash" aria-hidden="true"></i></button>'+
+      '</td>'+
+    '</tr>';
+  }).join('');
+}
+
+// ── RENDER CHARTS ────────────────────────────────────────────
+function renderCharts(caps){
+  var labels=caps.map(function(c){return c.name;});
+  var colors=caps.map(function(_,i){return COLORS[i%COLORS.length];});
+  document.getElementById('legendFlavor').innerHTML=caps.map(function(c,i){
+    return '<span class="legend-item"><span class="legend-sq" style="background:'+COLORS[i%COLORS.length]+'"></span>'+c.name+' ('+c.qty+')</span>';
+  }).join('');
+  if(chartFlavor) chartFlavor.destroy();
+  chartFlavor=new Chart(document.getElementById('chartFlavor'),{
+    type:'doughnut',
+    data:{labels:labels,datasets:[{data:caps.map(function(c){return c.qty;}),backgroundColor:colors,borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}
+  });
+  var weekLabels=[];
+  for(var i=0;i<8;i++) weekLabels.push('Sett. '+(i+1));
+  document.getElementById('legendProj').innerHTML=caps.map(function(c,i){
+    return '<span class="legend-item"><span class="legend-sq" style="background:'+COLORS[i%COLORS.length]+'"></span>'+c.name+'</span>';
+  }).join('');
+  if(chartProj) chartProj.destroy();
+  chartProj=new Chart(document.getElementById('chartProj'),{
+    type:'line',
+    data:{labels:weekLabels,datasets:caps.map(function(c,i){
+      var data=[];
+      for(var w=0;w<8;w++) data.push(Math.max(0,c.qty-c.weeklyRate*(w+1)));
+      return{label:c.name,data:data,borderColor:COLORS[i%COLORS.length],backgroundColor:COLORS[i%COLORS.length]+'18',borderWidth:2,pointRadius:3,fill:false,tension:.3};
+    })},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        y:{beginAtZero:true,grid:{color:'rgba(128,128,128,0.08)'},ticks:{color:'#888'},title:{display:true,text:'Capsule rimanenti',font:{size:11},color:'#888'}},
+        x:{grid:{color:'rgba(128,128,128,0.05)'},ticks:{color:'#888'}}
+      }
+    }
+  });
+}
+
+// ── RENDER SCARCITY ──────────────────────────────────────────
+function renderScarcity(caps){
+  var sorted=caps.slice().sort(function(a,b){return a.qty-b.qty;});
+  var max=Math.max.apply(null,caps.map(function(c){return c.qty;}).concat([1]));
+  var critical=sorted.filter(function(c){return c.qty<5;});
+  var html='';
+  if(critical.length){
+    html=critical.map(function(c){
+      var idx=caps.indexOf(c);
+      var w=weeksLeft(c);
+      var fc=c.qty<=3?'#E24B4A':'#EF9F27';
+      var wLabel=w===999?'∞ sett.':w+' sett.';
+      return '<div class="scarcity-item" style="border:0.5px solid rgba(162,45,45,0.3);border-radius:6px;padding:6px 8px;">'+
+        '<span class="scarcity-name" style="color:var(--text)"><span class="dot" style="background:'+COLORS[idx%COLORS.length]+'"></span>'+c.name+
+        '<span style="font-size:10px;font-weight:500;padding:2px 6px;border-radius:3px;background:#FCEBEB;color:#A32D2D;margin-left:6px">⚠ sotto 5</span></span>'+
+        '<div class="scarcity-track"><div class="scarcity-fill" style="width:'+Math.round(c.qty/max*100)+'%;background:'+fc+'"></div></div>'+
+        '<span class="scarcity-qty" style="color:#E24B4A;font-weight:600">'+c.qty+'</span>'+
+        '<span class="scarcity-weeks" style="color:var(--text2)">'+wLabel+'</span>'+
+      '</div>';
+    }).join('');
+  } else {
+    html='<p style="font-size:13px;color:#3B6D11;font-weight:500">✓ Tutte le scorte sono sufficienti</p>';
+  }
+  document.getElementById('scarcityList').innerHTML=html;
+}
+
+// ── CAPSULE INFO DB ──────────────────────────────────────────
+// intensity, lung (ristretto/espresso/lungo/gran_lungo/mug/double_espresso/carafe), notes
+var CAPSULE_INFO={
+  // ORIGINAL
+  'Caffè Florian':{intensity:11,lung:'espresso',notes:'Ispirato al celebre caffè veneziano. Note di cacao tostato, legno speziato e un finale morbido e avvolgente.'},
+  'Venezia':{intensity:8,lung:'espresso',notes:'Cremoso ed equilibrato. Richiama la tradizione espresso veneziana con note di cereali tostati e nocciola.'},
+  'Arpeggio':{intensity:9,lung:'espresso',notes:'Corpo cremoso e vellutato con note intense di cacao. Blend di Arabica del Centro America e Asia.'},
+  'Arpeggio Extra':{intensity:9,lung:'espresso',notes:'Versione intensificata dell\'Arpeggio, con note di cacao ancora più pronunciate e una crema extra densa.'},
+  'Arpeggio Decaffeinato':{intensity:9,lung:'espresso',notes:'Profilo identico all\'Arpeggio con le stesse note di cacao, senza caffeina.'},
+  'Ristretto':{intensity:10,lung:'ristretto',notes:'Intenso e contrastato. Note di frutti rossi e cacao scuro con una leggera punta acida. Blend di Arabica sudamericana e Robusta indiana.'},
+  'Ristretto Decaffeinato':{intensity:10,lung:'ristretto',notes:'Stesso profilo del Ristretto — intenso e fruttato — senza caffeina.'},
+  'Roma':{intensity:8,lung:'espresso',notes:'Equilibrato e corposo. Note di cereali tostati, legno e un retrogusto leggermente amaro tipico dell\'espresso romano.'},
+  'Napoli':{intensity:13,lung:'ristretto',notes:'Il più intenso della gamma. Tostatura scura, note di tabacco, liquirizia e un finale persistente e potente.'},
+  'Livanto':{intensity:6,lung:'espresso',notes:'Rotondo e morbido con note caramelizzate e di cereali tostati. Adatto a chi preferisce un caffè dolce ed equilibrato.'},
+  'Kazaar':{intensity:12,lung:'ristretto',notes:'Eccezionalmente intenso e peperoso. Note di cacao amaro, pepe e un corpo pieno con retrogusto lungo.'},
+  'Lisbon Bica':{intensity:9,lung:'espresso',notes:'Ispirato alla bica portoghese. Intenso e cremoso con note di caramello tostato e cereali.'},
+  'Rio de Janeiro Espresso':{intensity:5,lung:'espresso',notes:'Morbido e fruttato. Note di frutta secca e un\'acidità delicata tipica dei caffè brasiliani.'},
+  'Paris Espresso':{intensity:7,lung:'espresso',notes:'Aromatico e bilanciato. Note floreali e di frutta con un corpo medio e finale pulito.'},
+  'Istanbul Espresso':{intensity:8,lung:'espresso',notes:'Speziato e corposo, evoca il caffè turco. Note di cardamomo, legno e cacao.'},
+  'Stockholm Lungo':{intensity:6,lung:'lungo',notes:'Fresco e floreale con note di frutti di bosco. Lungo leggero e molto aromatico.'},
+  'Cape Town Lungo':{intensity:6,lung:'lungo',notes:'Note di frutta esotica e fiori con una delicata acidità. Lungo vivace e profumato.'},
+  'Shanghai Lungo':{intensity:7,lung:'lungo',notes:'Aromatico con note di fiori bianchi e agrumi. Lungo delicato tipico dei caffè asiatici.'},
+  'Tokyo Vivalto Lungo':{intensity:6,lung:'lungo',notes:'Complesso e floreale con note di fiori, cereali e un\'acidità vivace. Uno dei lunghi più aromatici.'},
+  'Buenos Aires Lungo':{intensity:7,lung:'lungo',notes:'Corpo medio con note di cacao e caramello. Lungo bilanciato con finale dolce.'},
+  'Vienna Lungo':{intensity:6,lung:'lungo',notes:'Delicato e vellutato con note di cereali tostati e un finale morbido. Ideale con latte.'},
+  'Vienna Lungo Decaffeinato':{intensity:6,lung:'lungo',notes:'Stesso profilo del Vienna Lungo, senza caffeina.'},
+  'Scuro':{intensity:8,lung:'espresso',notes:'Tostatura scura con note di cacao amaro e cereali. Pensato per abbinarsi al latte mantenendo la personalità.'},
+  'Chiaro':{intensity:6,lung:'lungo',notes:'Delicato e leggermente tostato con note di cereali e mandorla. Ideale per latte e cappuccino.'},
+  'Corto':{intensity:11,lung:'ristretto',notes:'Molto intenso, progettato per resistere al latte. Note di cacao scuro e spezie.'},
+  'Caramello':{intensity:6,lung:'espresso',notes:'Aromatizzato al caramello con una base morbida e dolce. Note di burro e zucchero vanigliato.'},
+  'Nocciola':{intensity:6,lung:'espresso',notes:'Aromatizzato alla nocciola tostata. Dolce e cremoso con un profumo avvolgente.'},
+  'Vaniglia':{intensity:6,lung:'lungo',notes:'Aromatizzato alla vaniglia con una base leggera e floreale. Dolce e vellutato.'},
+  'Vaniglia Decaffeinato':{intensity:6,lung:'lungo',notes:'Stesso profilo della Vaniglia, senza caffeina.'},
+  'Cioccolatino':{intensity:6,lung:'espresso',notes:'Aromatizzato al cioccolato fondente con note di cacao e un finale biscottato.'},
+  'Volluto Decaffeinato':{intensity:4,lung:'espresso',notes:'Leggero e delicato con note di biscotto e fiori bianchi. Dolce e rotondo, senza caffeina.'},
+  'Ispirazione Sicilia':{intensity:8,lung:'espresso',notes:'Ispirato al caffè siciliano. Intenso e corposo con note di mandorla amara e agrumi.'},
+  'Ispirazione Emilia':{intensity:7,lung:'espresso',notes:'Equilibrato con note di nocciola tostata e caramello. Richiama la tradizione emiliana.'},
+  'Ispirazione Aosta':{intensity:7,lung:'lungo',notes:'Note di castagna, legno e spezie dolci. Rotondo e comfort.'},
+  'Ispirazione Palermo':{intensity:10,lung:'ristretto',notes:'Il caffè palermitano per eccellenza. Molto intenso con note di fichi secchi e cacao tostato.'},
+  'Peru Organic':{intensity:6,lung:'espresso',notes:'Bio e sostenibile. Note di frutta matura, miele e fiori. Acidità delicata e dolcezza naturale.'},
+  'Decaffeinato':{intensity:6,lung:'espresso',notes:'Compostabile e senza caffeina. Note equilibrate di cereali e caramello.'},
+  'Indonesia':{intensity:7,lung:'espresso',notes:'Master Origin. Note di spezie, legno di cedro e un\'acidità agrumata unica dell\'isola di Sumatra.'},
+  'Ethiopia':{intensity:4,lung:'lungo',notes:'Master Origin. Floreale e fruttato con note di gelsomino e frutti di bosco. L\'origine del caffè.'},
+  'Nicaragua':{intensity:7,lung:'lungo',notes:'Master Origin. Note di frutta rossa, miele e un\'acidità vivace tipica dei caffè centroamericani.'},
+  'India':{intensity:11,lung:'ristretto',notes:'Master Origin. Note di spezie, pepe e un corpo pieno con finale lungo e persistente.'},
+  'Colombia':{intensity:6,lung:'lungo',notes:'Master Origin. Fruttato e bilanciato con note di frutti tropicali e un\'acidità morbida.'},
+  'Cosi':{intensity:4,lung:'lungo',notes:'Leggero e delicato con note floreali e di cereali. Il lungo più delicato della gamma Original.'},
+  'Capriccio':{intensity:5,lung:'espresso',notes:'Equilibrato con note di cereali tostati e una dolcezza naturale. Morbido e accessibile.'},
+  'Volluto':{intensity:4,lung:'espresso',notes:'Delicato e floreale con note di biscotto e fiori bianchi. Dolcezza naturale dell\'Arabica brasiliana.'},
+  'Pumpkin Spice Cake':{intensity:6,lung:'espresso',notes:'Edizione autunnale. Note di zucca, cannella e spezie dolci. Aromatico e confortante.'},
+  'Maple Pecan':{intensity:5,lung:'lungo',notes:'Edizione autunnale. Note di sciroppo d\'acero e pecan tostato. Dolce e avvolgente.'},
+  'Festive Espresso':{intensity:8,lung:'espresso',notes:'Edizione festiva. Note di spezie natalizie, arancia e cacao. Ricco e celebrativo.'},
+  'Sweet Almond & Hibiscus':{intensity:5,lung:'espresso',notes:'Note di mandorla dolce e ibisco. Floreale e delicato con una nota acida piacevole.'},
+  'Cinnamon & Candied Tamarind':{intensity:6,lung:'espresso',notes:'Note di cannella e tamarindo candito. Speziato e leggermente aspro, molto caratteristico.'},
+  // VERTUO
+  'Ristretto Classico':{intensity:8,lung:'ristretto',notes:'Intenso e cremoso. Note di cacao e cereali tostati con una crema vellutata generosa.'},
+  'Ristretto Intenso':{intensity:11,lung:'ristretto',notes:'Molto intenso con note di cacao amaro, spezie e un finale lungo e persistente.'},
+  'Il Caffè':{intensity:7,lung:'espresso',notes:'Equilibrato e rotondo. Note di caramello e cereali tostati. Il classico espresso italiano in versione Vertuo.'},
+  'Diavolitto':{intensity:11,lung:'ristretto',notes:'Audace e potente. Note di cacao scuro e pepe con un\'energia intensa. Il più intenso dei ristretto Vertuo.'},
+  'Orafio':{intensity:6,lung:'espresso',notes:'Delicato e dolce con note di frutta secca e caramello. Morbido e accessibile.'},
+  'Altissio':{intensity:11,lung:'espresso',notes:'Intenso e concentrato. Note di cacao tostato e legno con un corpo pieno e una crema abbondante.'},
+  'Altissio Decaffeinato':{intensity:11,lung:'espresso',notes:'Stesso profilo dell\'Altissio, senza caffeina.'},
+  'Toccanto':{intensity:9,lung:'espresso',notes:'Intenso e avvolgente. Note di cacao tostato e legno speziato con una crema densa e un finale persistente. Tipico dello stile espresso napoletano.'},
+  'Voltesso':{intensity:4,lung:'ristretto',notes:'Leggero e dolce con note di biscotto e caramello. Insolito per un ristretto, molto delicato.'},
+  'Bianco Piccolo For Milk':{intensity:9,lung:'ristretto',notes:'Progettato per il latte. Note di cacao e spezie che emergono potenti anche con la schiuma.'},
+  'Master Origins Peru Organic':{intensity:6,lung:'espresso',notes:'Bio. Note di frutta matura, miele e fiori. Dolce e aromatico con una delicata acidità.'},
+  'Double Espresso Dolce':{intensity:5,lung:'double_espresso',notes:'Dolce e cremoso. Note di caramello e biscotto con un corpo morbido e un finale dolce.'},
+  'Double Espresso Chiaro':{intensity:5,lung:'double_espresso',notes:'Leggero e fruttato. Note di frutta rossa e cereali chiari. Ideale per chi ama il caffè lungo e delicato.'},
+  'Double Espresso Chiaro Decaffeinato':{intensity:5,lung:'double_espresso',notes:'Stesso profilo del Chiaro, senza caffeina.'},
+  'Double Espresso Scuro':{intensity:8,lung:'double_espresso',notes:'Tostatura scura con note di cacao e cereali tostati. Intenso pur nella sua lunghezza.'},
+  'Fortado':{intensity:8,lung:'gran_lungo',notes:'Intenso per un gran lungo. Note di cacao e cereali tostati con un corpo sorprendentemente pieno.'},
+  'Fortado Decaffeinato':{intensity:8,lung:'gran_lungo',notes:'Stesso profilo del Fortado, senza caffeina.'},
+  'Arondio':{intensity:6,lung:'gran_lungo',notes:'Morbido e bilanciato con note di cereali e caramello. Gran lungo ideale per una pausa rilassante.'},
+  'Inizio':{intensity:4,lung:'gran_lungo',notes:'Leggero e floreale. Note di fiori bianchi e frutta con una dolcezza naturale.'},
+  'Master Origins Costa Rica':{intensity:6,lung:'gran_lungo',notes:'Note di frutti tropicali e caramello con una piacevole acidità. Vivace e aromatico.'},
+  'Master Origins Ethiopia':{intensity:4,lung:'gran_lungo',notes:'Floreale e fruttato con note di gelsomino e frutti di bosco. Complesso e delicato.'},
+  'Intenso':{intensity:9,lung:'mug',notes:'Corposo e tostato. Note di cacao e spezie in una tazza grande. Mantiene l\'intensità anche nel formato lungo.'},
+  'Stormio':{intensity:8,lung:'mug',notes:'Intenso e legnoso. Note di cacao scuro e legno speziato. Robusto e avvolgente.'},
+  'Odacio':{intensity:7,lung:'mug',notes:'Vivace e fruttato con note di frutti rossi e cereali. Equilibrato per una mug.'},
+  'Melozio':{intensity:6,lung:'mug',notes:'Morbido e biscottato con note di miele e cereali. Dolce e confortante.'},
+  'Melozio Decaffeinato':{intensity:6,lung:'mug',notes:'Stesso profilo del Melozio, senza caffeina.'},
+  'Solelio':{intensity:4,lung:'mug',notes:'Leggerissimo e floreale. Note di fiori e frutta con una dolcezza quasi impalpabile.'},
+  'Half Caffeinato':{intensity:5,lung:'mug',notes:'Metà caffeina, piena dolcezza. Note di cereali e caramello. Ideale nel pomeriggio.'},
+  'Master Origins Mexico':{intensity:6,lung:'mug',notes:'Note di cacao, toffee e noci pecan. Dolce e avvolgente, tipico dei caffè messicani di altura.'},
+  'Master Origins Colombia':{intensity:6,lung:'mug',notes:'Fruttato e bilanciato con note di frutti tropicali e una morbida acidità.'},
+  'Master Origins El Salvador':{intensity:6,lung:'mug',notes:'Note di frutta rossa e caramello con una delicata acidità e corpo medio.'},
+  'Bianco Doppio For Milk':{intensity:7,lung:'mug',notes:'Progettato per il latte in formato grande. Note di cacao e spezie che resistono alla schiuma.'},
+  'Bianco Forte':{intensity:7,lung:'mug',notes:'Intenso per accompagnare il latte. Note di cacao tostato e cereali scuri. Cremoso e persistente.'},
+  'Rich Chocolate':{intensity:6,lung:'mug',notes:'Aromatizzato al cioccolato fondente. Note di cacao intenso e vaniglia. Dessert in tazza.'},
+  'Roasted Hazelnut':{intensity:6,lung:'mug',notes:'Aromatizzato alla nocciola tostata. Dolce e avvolgente con un aroma irresistibile.'},
+  'Golden Caramel':{intensity:5,lung:'mug',notes:'Aromatizzato al caramello dorato. Dolce, vellutato e comfort.'},
+  'Sweet Vanilla':{intensity:5,lung:'mug',notes:'Aromatizzato alla vaniglia. Dolce e floreale con un finale cremoso.'},
+  'Sweet Vanilla Decaffeinato':{intensity:5,lung:'mug',notes:'Stesso profilo del Sweet Vanilla, senza caffeina.'},
+  'Ginseng Delight':{intensity:4,lung:'mug',notes:'Arricchito con ginseng. Dolce e leggermente amarognolo con note erbacee energizzanti.'},
+  'Vividà':{intensity:5,lung:'mug',notes:'Leggero e fruttato, pensato per chi vuole ridurre la caffeina senza rinunciare al sapore.'},
+  'Stormio GO':{intensity:8,lung:'mug',notes:'Versione in capsula GO del classico Stormio. Intenso e legnoso, pronto ovunque.'},
+  'Melozio GO':{intensity:6,lung:'mug',notes:'Versione in capsula GO del Melozio. Morbido e biscottato, ideale on the go.'},
+  'Active B6':{intensity:5,lung:'mug',notes:'Arricchito con vitamina B6. Note dolci e cereali con un profilo leggero e funzionale.'},
+  'Ice Leggero':{intensity:4,lung:'mug',notes:'Pensato per il ghiaccio. Note di frutta e agrumi, fresco e dissetante.'},
+  'Ice Forte':{intensity:7,lung:'mug',notes:'Intenso anche sul ghiaccio. Note di cacao e spezie che reggono la diluizione.'},
+  'Cold Brew Style Intense':{intensity:6,lung:'mug',notes:'Ispirato al cold brew. Note di cioccolato fondente e frutta con un profilo freddo e rotondo.'},
+  'Pistachio Vanilla':{intensity:5,lung:'espresso',notes:'Edizione estiva. Note di pistacchio e vaniglia. Dolce, cremoso e molto goloso.'},
+  'Coconut Vanilla Over Ice':{intensity:4,lung:'mug',notes:'Note di cocco e vaniglia per un caffè estivo rinfrescante. Tropicale e dolce.'},
+  'White Chocolate & Strawberry':{intensity:4,lung:'espresso',notes:'Note di cioccolato bianco e fragola. Dolce e fruttato, pensato per l\'estate.'},
+  'French Lavender & Vanilla Decaffeinato':{intensity:4,lung:'mug',notes:'Note di lavanda e vaniglia. Floreale e rilassante, senza caffeina. Perfetto la sera.'},
+  'Yuzu Vanilla Over Ice':{intensity:4,lung:'espresso',notes:'Note di yuzu (agrume giapponese) e vaniglia. Fresco, agrumato e originale.'},
+  'Carafe Pour-Over Style Intense':{intensity:8,lung:'carafe',notes:'Formato famiglia. Note di cacao e cereali tostati in un caffè filtro intenso da 535ml.'},
+  'Festive Double Espresso':{intensity:8,lung:'double_espresso',notes:'Edizione festiva. Speziato e profumato con note di cannella e arancia candita.'},
+  'Peppermint Pinwheel':{intensity:5,lung:'espresso',notes:'Aromatizzato alla menta piperita. Fresco e dolce, tipicamente natalizio.'},
+  'Gingerbread':{intensity:6,lung:'espresso',notes:'Note di pan di zenzero, cannella e chiodi di garofano. Speziato e festivo.'},
+};
+
+// intensity lookup for auto-fill
+function getCapsuleIntensity(name){
+  return CAPSULE_INFO[name]?CAPSULE_INFO[name].intensity:6;
+}
+
+function onCapsuleSelect(){
+  // nothing visual needed — intensity is auto
+}
+
+
+function renderRecipeFilter(){
+  var sel=document.getElementById('recipeFilter');
+  var prev=sel.value;
+  var items=CATALOGUE[currentLine];
+  var groups={};
+  items.forEach(function(i){ if(!groups[i.cat]) groups[i.cat]=[]; groups[i.cat].push(i.name); });
+  sel.innerHTML='<option value="all">Tutte le capsule</option>';
+  Object.keys(groups).forEach(function(cat){
+    var og=document.createElement('optgroup');
+    og.label=cat;
+    groups[cat].forEach(function(n){
+      var o=document.createElement('option');
+      o.value=n; o.textContent=n;
+      og.appendChild(o);
+    });
+    sel.appendChild(og);
+  });
+  if(prev) sel.value=prev;
+}
+
+var activeRecipeTag='all';
+
+function setRecipeTag(tag){
+  activeRecipeTag=tag;
+  ['all','hot','milk','cold','world','starbucks'].forEach(function(t){
+    var btn=document.getElementById('rtag-'+t);
+    if(btn) btn.className='rtag-btn'+(t===tag?' rtag-active':'');
+  });
+  renderRecipes();
+}
+
+// ── RENDER RECIPES ───────────────────────────────────────────
+var aiRecipeCache={};
+
+function renderRecipeCards(recipes, profileHtml){
+  var tagClass={hot:'tag-hot',cold:'tag-cold',milk:'tag-milk',world:'tag-world',starbucks:'tag-starbucks'};
+  var tagLabel={hot:'Caldo',cold:'Freddo',milk:'Con latte',world:'Dal mondo',starbucks:'Starbucks style'};
+  // ingredients considered "basic" — no need to flag
+  var basic=['caffè','capsula','latte','ghiaccio','acqua','zucchero','tazza','zucchero di canna','zucchero grezzo'];
+  function isExtra(ing){
+    var low=ing.toLowerCase();
+    return !basic.some(function(b){ return low.includes(b); });
+  }
+  var recipesHtml=recipes.map(function(r){
+    var extras=(r.ingredients||[]).filter(function(ing){ return isExtra(ing); });
+    var extraHtml=extras.length>0
+      ?'<div class="recipe-extras"><span class="recipe-extras-label">Occorre anche</span>'+
+        extras.map(function(e){ return '<span class="recipe-extra-pill">'+e+'</span>'; }).join('')+
+        '</div>'
+      :'';
+    return '<div class="recipe-card">'+
+      '<div class="recipe-card-header">'+
+        '<span class="recipe-icon">'+(r.icon||'☕')+'</span>'+
+        '<div><div class="recipe-name">'+r.name+'</div><div class="recipe-capsule">'+(r.capsules||[]).slice(0,2).join(', ')+((r.capsules||[]).length>2?'…':'')+'</div></div>'+
+      '</div>'+
+      '<div class="recipe-body">'+
+        '<div class="recipe-ing"><strong>Ingredienti</strong>'+(r.ingredients||[]).join('<br>')+'</div>'+
+      '</div>'+
+      extraHtml+
+      '<span class="recipe-tag '+(tagClass[r.tag]||'tag-hot')+'">'+(tagLabel[r.tag]||'Caldo')+'</span>'+
+    '</div>';
+  }).join('');
+  document.getElementById('recipesGrid').innerHTML=profileHtml+recipesHtml;
+}
+
+async function generateAIRecipes(capsuleName, info, profileHtml){
+  var grid=document.getElementById('recipesGrid');
+  grid.innerHTML=profileHtml+
+    '<div style="grid-column:1/-1;display:flex;align-items:center;gap:12px;padding:1rem;background:var(--bg2);border-radius:var(--rl);border:0.5px solid var(--border)">'+
+    '<span style="font-size:20px">☕</span>'+
+    '<div><div style="font-size:13px;font-weight:500;color:var(--text)">Generazione ricette in corso…</div>'+
+    '<div style="font-size:12px;color:var(--text2);margin-top:3px">Sto creando ricette personalizzate per '+capsuleName+'</div></div></div>';
+
+  var prompt='Sei un esperto barista Nespresso. Genera 4 ricette originali e dettagliate per la capsula Nespresso "'+capsuleName+'" con queste caratteristiche:\n'+
+    '- Intensità: '+info.intensity+'/13\n'+
+    '- Lunghezza: '+info.lung+'\n'+
+    '- Note aromatiche: '+info.notes+'\n\n'+
+    'Per ogni ricetta fornisci un JSON con questi campi esatti:\n'+
+    '{ "name": "nome ricetta", "icon": "emoji", "tag": "hot|cold|milk", "ingredients": ["ingrediente 1", "ingrediente 2"], "steps": ["step 1", "step 2", "step 3"] }\n\n'+
+    'Rispondi SOLO con un array JSON valido di 4 oggetti, nessun testo aggiuntivo, nessun markdown, nessun backtick.';
+
+  try {
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    var data=await resp.json();
+    var text=data.content.map(function(b){return b.text||'';}).join('');
+    text=text.replace(/```json|```/g,'').trim();
+    var recipes=JSON.parse(text);
+    // add capsule name to each
+    recipes=recipes.map(function(r){ r.capsules=[capsuleName]; return r; });
+    aiRecipeCache[capsuleName]=recipes;
+    renderRecipeCards(recipes, profileHtml);
+  } catch(e){
+    grid.innerHTML=profileHtml+
+      '<div style="grid-column:1/-1;font-size:13px;color:var(--text3);padding:.5rem">'+
+      'Impossibile generare ricette al momento. Riprova selezionando di nuovo la capsula.</div>';
+  }
+}
+
+function renderRecipes(){
+  var sel=document.getElementById('recipeFilter').value;
+  var tagClass={hot:'tag-hot',cold:'tag-cold',milk:'tag-milk'};
+  var tagLabel={hot:'Caldo',cold:'Freddo',milk:'Con latte'};
+
+  // capsule profile card
+  var profileHtml='';
+  if(sel!=='all'){
+    var profile=CATALOGUE[currentLine].find(function(c){return c.name===sel;});
+    var info=CAPSULE_INFO[sel];
+    if(profile && info){
+      var stars='';
+      for(var si=0;si<13;si++) stars+='<span style="display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:2px;background:'+(si<info.intensity?'#c8602a':'var(--border)')+'"></span>';
+      var lungTag={ristretto:'Ristretto (25ml)',espresso:'Espresso (40ml)',lungo:'Lungo (110ml)',gran_lungo:'Gran Lungo (150ml)',mug:'Mug (230ml)',double_espresso:'Double Espresso (80ml)',carafe:'Carafe (535ml)'};
+      profileHtml='<div style="background:var(--bg2);border-radius:var(--rl);padding:1rem 1.25rem;margin-bottom:1rem;display:flex;gap:1.5rem;flex-wrap:wrap;border:0.5px solid var(--border)">'+
+        '<div style="min-width:160px">'+
+          '<div style="font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">'+sel+'</div>'+
+          '<div style="font-size:11px;color:var(--text3);margin-bottom:4px">Categoria: '+profile.cat+'</div>'+
+          '<div style="font-size:11px;color:var(--text3);margin-bottom:8px">Lunghezza: '+(lungTag[info.lung]||info.lung)+'</div>'+
+          '<div style="font-size:11px;color:var(--text2);margin-bottom:4px">Intensità '+info.intensity+'/13</div>'+
+          '<div>'+stars+'</div>'+
+        '</div>'+
+        '<div style="flex:1;min-width:200px">'+
+          '<div style="font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Aromi & note</div>'+
+          '<div style="font-size:13px;color:var(--text);line-height:1.6">'+info.notes+'</div>'+
+        '</div>'+
+      '</div>';
+    }
+  }
+
+  // filter hardcoded recipes
+  var filtered=RECIPES.filter(function(r){
+    var lineOk=r.line==='both'||(r.line==='original'&&currentLine==='original')||(r.line==='vertuo'&&currentLine==='vertuo');
+    var capOk=sel==='all'||r.capsules.some(function(cap){return cap.toLowerCase()===sel.toLowerCase()||sel.toLowerCase().includes(cap.toLowerCase())||cap.toLowerCase().includes(sel.toLowerCase());});
+    var tagOk=activeRecipeTag==='all'||r.tag===activeRecipeTag;
+    return lineOk&&capOk&&tagOk;
+  });
+
+  if(sel==='all'){
+    var recipesHtml=filtered.map(function(r){
+      return '<div class="recipe-card">'+
+        '<div class="recipe-card-header"><div class="recipe-icon" style="background:var(--bg3)">'+r.icon+'</div>'+
+        '<div><div class="recipe-name">'+r.name+'</div><div class="recipe-capsule">'+r.capsules.slice(0,3).join(', ')+(r.capsules.length>3?'…':'')+'</div></div></div>'+
+        '<div class="recipe-body">'+
+          '<div class="recipe-ing"><strong>Ingredienti</strong><br>'+r.ingredients.join('<br>')+'</div>'+
+          '<div class="recipe-ing"><strong>Preparazione</strong><ol class="recipe-steps">'+r.steps.map(function(s){return '<li>'+s+'</li>';}).join('')+'</ol></div>'+
+        '</div>'+
+        '<span class="recipe-tag '+tagClass[r.tag]+'">'+tagLabel[r.tag]+'</span>'+
+      '</div>';
+    }).join('');
+    document.getElementById('recipesGrid').innerHTML=profileHtml+recipesHtml;
+    return;
+  }
+
+  // for a specific capsule: use hardcoded if available, else AI
+  if(filtered.length>0){
+    renderRecipeCards(filtered, profileHtml);
+  } else if(sel && sel!=='all'){
+    var info=CAPSULE_INFO[sel];
+    if(!info){ document.getElementById('recipesGrid').innerHTML=profileHtml+'<p style="font-size:13px;color:var(--text3)">Nessuna ricetta disponibile.</p>'; return; }
+    // use cache if available
+    if(aiRecipeCache[sel]){
+      renderRecipeCards(aiRecipeCache[sel], profileHtml);
+    } else {
+      generateAIRecipes(sel, info, profileHtml);
+    }
+  }
+}
+
+// ── RENDER SHOPPING LIST ─────────────────────────────────────
+function renderShoppingList(){
+  var filter=document.getElementById('shoppingFilter').value;
+  var d=getData();
+  var lines=filter==='all'?['original','vertuo']:filter==='original'?['original']:['vertuo'];
+  var items=[];
+
+  lines.forEach(function(line){
+    var caps=d[line]||[];
+    caps.forEach(function(c){
+      var target=c.weeklyRate*4;
+      var needed=Math.max(0,target-c.qty);
+      var boxes=Math.ceil(needed/10);
+      if(boxes>0 || c.qty<5){
+        items.push({
+          name:c.name, line:line, qty:c.qty,
+          boxes:boxes, capsNeeded:boxes*10,
+          urgent:c.qty<5
+        });
+      }
+    });
+  });
+
+  items.sort(function(a,b){ return (b.urgent?1:0)-(a.urgent?1:0)||b.boxes-a.boxes; });
+
+  var lineLabel={original:'Originale',vertuo:'Vertuo'};
+  var lineColor={original:'#c8602a',vertuo:'#1D9E75'};
+
+  if(items.length===0){
+    document.getElementById('shoppingList').innerHTML=
+      '<div style="text-align:center;padding:1.5rem;color:var(--text3);font-size:13px">'+
+      '<i class="ti ti-circle-check" style="font-size:24px;display:block;margin-bottom:8px;color:#3B6D11"></i>'+
+      'Scorte perfette! Nessun acquisto necessario.</div>';
+    document.getElementById('shoppingTotal').innerHTML='';
+    return;
+  }
+
+  var totalBoxes=items.reduce(function(s,i){return s+i.boxes;},0);
+  var totalCaps=items.reduce(function(s,i){return s+i.capsNeeded;},0);
+
+  document.getElementById('shoppingList').innerHTML=items.map(function(it){
+    var shopUrl='https://www.nespresso.com/it/it/order/capsules/'+
+      (it.line==='original'?'original':'vertuo')+'/'+
+      encodeURIComponent(it.name.toLowerCase().replace(/\s+/g,'-'));
+    var urgentBadge=it.urgent?'<span style="font-size:10px;font-weight:500;padding:2px 6px;border-radius:3px;background:#FCEBEB;color:#A32D2D;margin-left:6px">⚠ urgente</span>':'';
+    var boxesText=it.boxes===0?'<span style="font-size:12px;color:#3B6D11">solo rifornimento</span>':
+      '<span style="font-weight:600;font-size:15px;color:'+(it.boxes>=2?'#A32D2D':'#854F0B')+'">'+it.boxes+'</span>'+
+      '<span style="font-size:12px;color:var(--text2);margin-left:3px">box</span>'+
+      '<span style="font-size:11px;color:var(--text3);margin-left:4px">('+it.capsNeeded+' caps.)</span>';
+    return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border)">'+
+      '<div style="width:6px;height:36px;border-radius:3px;background:'+lineColor[it.line]+';flex-shrink:0"></div>'+
+      '<div style="flex:1;min-width:0">'+
+        '<div style="font-size:13px;font-weight:500;color:var(--text);display:flex;align-items:center;flex-wrap:wrap;gap:4px">'+
+          it.name+urgentBadge+
+          '<span style="font-size:10px;background:var(--bg2);color:var(--text2);padding:2px 6px;border-radius:3px">'+lineLabel[it.line]+'</span>'+
+        '</div>'+
+        '<div style="font-size:11px;color:var(--text3);margin-top:2px">Scorta attuale: '+it.qty+' capsule</div>'+
+      '</div>'+
+      '<div style="text-align:right;flex-shrink:0">'+boxesText+'</div>'+
+      '<a href="'+shopUrl+'" target="_blank" style="flex-shrink:0;background:var(--bg2);border:0.5px solid var(--border2);border-radius:var(--r);padding:6px 10px;font-size:11px;color:var(--text2);text-decoration:none;white-space:nowrap" title="Acquista su Nespresso">'+
+        '<i class="ti ti-shopping-cart" style="font-size:13px"></i>'+
+      '</a>'+
+    '</div>';
+  }).join('');
+
+  document.getElementById('shoppingTotal').innerHTML=totalBoxes===0?'':
+    '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">'+
+      '<span style="font-size:12px;color:var(--text2)">Totale da acquistare</span>'+
+      '<span style="font-size:14px;font-weight:600;color:var(--text)">'+totalBoxes+' box <span style="font-size:12px;font-weight:400;color:var(--text3)">('+totalCaps+' capsule)</span></span>'+
+    '</div>'+
+    '<a href="https://www.nespresso.com/it/it/order/capsules" target="_blank" '+
+      'style="display:block;text-align:center;margin-top:10px;background:#1D9E75;color:#fff;border-radius:var(--r);padding:10px;font-size:13px;font-weight:500;text-decoration:none">'+
+      '<i class="ti ti-external-link" style="margin-right:6px"></i>Vai allo shop Nespresso'+
+    '</a>';
+}
+
+function setLine(line){
+  currentLine=line;
+  document.getElementById('lineTitle').textContent=line==='original'?'Nespresso Originale':'Nespresso Vertuo';
+  document.getElementById('lineIcon').style.background=line==='original'?'#c8602a':'#1D9E75';
+  document.getElementById('tabOrig').className='tab-btn'+(line==='original'?' active-orig':'');
+  document.getElementById('tabVert').className='tab-btn'+(line==='vertuo'?' active-vert':'');
+  document.getElementById('addBtn').style.background=line==='original'?'#c8602a':'#1D9E75';
+  populateCapsuleSelect();
+  render();
+}
+
+// ── RENDER ALL ───────────────────────────────────────────────
+function render(){
+  var d=getData();
+  var caps=d[currentLine];
+  renderMetrics(caps);
+  renderTable(caps);
+  renderCharts(caps);
+  renderScarcity(caps);
+  renderRecipeFilter();
+  // ricette e lista spesa si aggiornano all'apertura dell'accordion
+  // se già aperti, aggiorna subito
+  if(document.getElementById('recipesBody').style.display!=='none') renderRecipes();
+  if(document.getElementById('shoppingBody').style.display!=='none') renderShoppingList();
+}
+
+// ── CRUD ─────────────────────────────────────────────────────
+async function consumeCapsule(id){
+  var d=getData();
+  var c=d[currentLine].find(function(c){return String(c.id)===String(id);});
+  if(c && c.qty>0){ c.qty-=1; await saveData(d); render(); }
+}
+async function updateRate(id,val){
+  var v=Math.max(1,parseInt(val)||1);
+  var d=getData();
+  var c=d[currentLine].find(function(c){return String(c.id)===String(id);});
+  if(c){ c.weeklyRate=v; await saveData(d); render(); }
+}
+async function deleteCapsule(id){
+  var d=getData();
+  d[currentLine]=d[currentLine].filter(function(c){return String(c.id)!==String(id);});
+  await saveData(d); render();
+}
+async function addCapsule(){
+  var name=document.getElementById('inName').value.trim();
+  var qty=parseInt(document.getElementById('inQty').value);
+  var expiry=document.getElementById('inExp').value;
+  if(!name||isNaN(qty)||qty<1||!expiry){
+    alert('Seleziona una capsula, inserisci la quantità e la scadenza.'); return;
+  }
+  var intensity=getCapsuleIntensity(name);
+  var d=getData();
+  var existing=d[currentLine].find(function(c){return c.name===name;});
+  if(existing){
+    existing.qty+=qty;
+    existing.expiry=expiry;
+  } else {
+    // use temporary local ID — will be replaced by DB UUID after saveData
+    d[currentLine].push({id:'tmp_'+Date.now(),name:name,qty:qty,intensity:intensity,expiry:expiry,weeklyRate:1});
+  }
+  await saveData(d);
+  document.getElementById('inName').value='';
+  document.getElementById('inQty').value='';
+  document.getElementById('inExp').value='';
+  render();
+}
+
+function toggleTheme(){
+  var body=document.body;
+  var icon=document.getElementById('themeIcon');
+  var current=localStorage.getItem('capsulo_theme')||'auto';
+  var isDark=body.classList.contains('theme-dark')||(current==='auto'&&window.matchMedia('(prefers-color-scheme:dark)').matches);
+  if(isDark){
+    body.classList.remove('theme-dark'); body.classList.add('theme-light');
+    localStorage.setItem('capsulo_theme','light');
+    icon.className='ti ti-moon';
+  } else {
+    body.classList.remove('theme-light'); body.classList.add('theme-dark');
+    localStorage.setItem('capsulo_theme','dark');
+    icon.className='ti ti-sun';
+  }
+}
+
+function applyTheme(){
+  var saved=localStorage.getItem('capsulo_theme');
+  var icon=document.getElementById('themeIcon');
+  if(!icon) return;
+  if(saved==='light'){ document.body.classList.add('theme-light'); icon.className='ti ti-moon'; }
+  else if(saved==='dark'){ document.body.classList.add('theme-dark'); icon.className='ti ti-sun'; }
+  else{
+    var dark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+    icon.className=dark?'ti ti-sun':'ti ti-moon';
+  }
+}
+applyTheme();
+
+function editName(){
+  var current=document.getElementById('greetName').textContent;
+  var newName=prompt('Come vuoi chiamarti?', current);
+  if(newName && newName.trim()){
+    newName=newName.trim();
+    document.getElementById('greetName').textContent=newName;
+    if(currentUser){
+      currentUser.name=newName;
+      localStorage.setItem('nespresso_session',JSON.stringify(currentUser));
+      saveProfile(newName);
+    }
+  }
+}
+
+function togglePassVis(){
+  var inp=document.getElementById('authPass');
+  var icon=document.getElementById('passEyeIcon');
+  if(inp.type==='password'){ inp.type='text'; icon.className='ti ti-eye-off'; }
+  else{ inp.type='password'; icon.className='ti ti-eye'; }
+}
+
+document.getElementById('passEyeBtn').addEventListener('click', function(e){
+  e.preventDefault();
+  togglePassVis();
+});
+
+// ── AUTH ──────────────────────────────────────────────────────
+async function doLogin(){
+  var email=document.getElementById('authEmail').value.trim();
+  var pass=document.getElementById('authPass').value;
+  var nameVal=document.getElementById('authName').value.trim();
+  var isReg=document.getElementById('authMode').dataset.mode==='register';
+  var btn=document.getElementById('authMode');
+  var errEl=document.getElementById('authError');
+  errEl.textContent='';
+  if(!email){ errEl.textContent='Inserisci la tua email.'; return; }
+  if(!pass){ errEl.textContent='Inserisci la password.'; return; }
+  if(isReg && !nameVal){ errEl.textContent='Inserisci il tuo nome.'; return; }
+  btn.disabled=true;
+  btn.textContent=isReg?'Registrazione…':'Accesso…';
+  var endpoint=isReg?'/auth/v1/signup':'/auth/v1/token?grant_type=password';
+  try{
+    var r=await fetch(SUPA_URL+endpoint,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPA_KEY},body:JSON.stringify({email:email,password:pass})});
+    var data=await r.json();
+    if(data.error||data.error_description){
+      var msg=(data.error_description||data.error||'').toLowerCase();
+      var friendly='Errore. Riprova.';
+      if(msg.includes('invalid')||msg.includes('credentials')||msg.includes('password')) friendly='Email o password errati. Riprova.';
+      else if(msg.includes('already registered')||msg.includes('already exists')) friendly='Email già registrata. Accedi invece di registrarti.';
+      else if(msg.includes('weak')||msg.includes('short')) friendly='Password troppo corta. Usa almeno 6 caratteri.';
+      else if(msg.includes('email')) friendly='Email non valida.';
+      errEl.textContent=friendly;
+      btn.disabled=false; btn.textContent=isReg?'Registrati':'Accedi';
+      return;
+    }
+    if(isReg && !data.access_token){
+      try{
+        var r2=await fetch(SUPA_URL+'/auth/v1/token?grant_type=password',{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPA_KEY},body:JSON.stringify({email:email,password:pass})});
+        var data2=await r2.json();
+        if(data2.access_token){
+          currentUser={id:data2.user.id,email:data2.user.email,access_token:data2.access_token,name:nameVal};
+          await saveProfile(nameVal);
+          localStorage.setItem('nespresso_session',JSON.stringify(currentUser));
+          memData={original:[],vertuo:[]};
+          showDashboard(nameVal);
+          return;
+        }
+      }catch(e2){}
+      errEl.textContent='Registrazione completata! Ora accedi.';
+      btn.disabled=false; toggleAuthMode(); return;
+    }
+    currentUser={id:data.user.id,email:data.user.email,access_token:data.access_token,name:''};
+    memData={original:[],vertuo:[]};
+    localStorage.setItem('nespresso_session',JSON.stringify(currentUser));
+    // show dashboard immediately, load data in background
+    showDashboard(data.user.email.split('@')[0]);
+    Promise.all([loadFromCloud(), loadProfile()]).then(function(){
+      if(!currentUser.name) currentUser.name=data.user.email.split('@')[0];
+      localStorage.setItem('nespresso_session',JSON.stringify(currentUser));
+      document.getElementById('greetName').textContent=currentUser.name;
+      render();
+    });
+  }catch(e){
+    errEl.textContent='Errore di connessione. Controlla la rete.';
+    btn.disabled=false; btn.textContent=isReg?'Registrati':'Accedi';
+  }
+}
+
+async function doLogout(){
+  currentUser=null;
+  memData={original:[],vertuo:[]};
+  localStorage.removeItem('nespresso_session');
+  document.getElementById('mainContent').style.display='none';
+  document.getElementById('nameModal').style.display='flex';
+  document.getElementById('authEmail').value='';
+  document.getElementById('authPass').value='';
+  document.getElementById('authError').textContent='';
+}
+
+function toggleAuthMode(){
+  var btn=document.getElementById('authMode');
+  var title=document.getElementById('authTitle');
+  var sub=document.getElementById('authSub');
+  var toggle=document.getElementById('authToggle');
+  var nameField=document.getElementById('authName');
+  if(btn.dataset.mode==='login'){
+    btn.dataset.mode='register';
+    btn.textContent='Registrati';
+    title.textContent='Crea il tuo account';
+    sub.textContent='Inserisci i tuoi dati per registrarti.';
+    toggle.innerHTML='Hai già un account? <a href="#" onclick="toggleAuthMode()" style="color:var(--accent-vert)">Accedi</a>';
+    nameField.style.display='block';
+  } else {
+    btn.dataset.mode='login';
+    btn.textContent='Accedi';
+    title.textContent='Benvenuto nella tua dashboard';
+    sub.textContent='Accedi per vedere il tuo inventario Nespresso.';
+    toggle.innerHTML='Non hai un account? <a href="#" onclick="toggleAuthMode()" style="color:var(--accent-vert)">Registrati</a>';
+    nameField.style.display='none';
+  }
+}
+
+function showDashboard(name){
+  document.getElementById('greetName').textContent=name;
+  document.getElementById('nameModal').style.display='none';
+  document.getElementById('mainContent').style.display='block';
+  document.getElementById('lastUpdate').textContent='Aggiornato '+new Date().toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'});
+  // add logout button
+  var hdr=document.getElementById('logoutBtn');
+  if(hdr) hdr.style.display='inline-flex';
+  setLine('original');
+}
+
+document.getElementById('authEmail').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+document.getElementById('authPass').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+
+// auto-login from session
+var savedSession=null;
+try{ savedSession=JSON.parse(localStorage.getItem('nespresso_session')||'null'); }catch(e){}
+if(savedSession && savedSession.access_token){
+  currentUser=savedSession;
+  // show immediately with cached name, refresh data in background
+  showDashboard(currentUser.name||currentUser.email.split('@')[0]);
+  Promise.all([loadFromCloud(), loadProfile()]).then(function(){
+    document.getElementById('greetName').textContent=currentUser.name||currentUser.email.split('@')[0];
+    render();
+  });
+}
+
+function toggleAccordion(bodyId, header){
+  var body=document.getElementById(bodyId);
+  var icon=header.querySelector('.accordion-icon');
+  var isOpen=body.style.display!=='none';
+  body.style.display=isOpen?'none':'block';
+  if(icon) icon.classList.toggle('open', !isOpen);
+  // render content when opening for the first time
+  if(!isOpen){
+    if(bodyId==='recipesBody') renderRecipes();
+    if(bodyId==='shoppingBody') renderShoppingList();
+  }
+}
+
+// ── SERVICE WORKER ────────────────────────────────────────────
+var swReg=null;
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('/service-worker.js').then(function(reg){
+      swReg=reg;
+      reg.addEventListener('updatefound',function(){
+        var newWorker=reg.installing;
+        newWorker.addEventListener('statechange',function(){
+          if(newWorker.state==='installed' && navigator.serviceWorker.controller){
+            // new version ready — show banner
+            var banner=document.getElementById('updateBanner');
+            if(banner) banner.style.display='flex';
+          }
+        });
+      });
+    }).catch(function(e){console.log('SW:',e);});
+    // detect controller change (update applied)
+    navigator.serviceWorker.addEventListener('controllerchange',function(){
+      window.location.reload();
+    });
+  });
+}
+
+function applyUpdate(){
+  if(swReg && swReg.waiting){
+    swReg.waiting.postMessage({type:'SKIP_WAITING'});
+  } else {
+    window.location.reload();
+  }
+}
+</script>
+
+<div id="updateBanner" style="display:none;position:fixed;bottom:1.25rem;left:50%;transform:translateX(-50%);z-index:888;background:var(--esp);color:var(--bis);border-radius:40px;padding:10px 20px;font-size:13px;font-family:var(--font-body);align-items:center;gap:10px;box-shadow:0 4px 20px rgba(58,33,25,0.3);white-space:nowrap;">
+  <span>☕ Nuova versione disponibile</span>
+  <button onclick="applyUpdate()" style="background:var(--bis);color:var(--esp);border:none;border-radius:20px;padding:4px 14px;font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font-body)">Aggiorna</button>
+  <button onclick="document.getElementById('updateBanner').style.display='none'" style="background:transparent;border:none;color:rgba(235,205,183,0.5);cursor:pointer;font-size:18px;padding:0 0 0 4px;line-height:1">×</button>
+</div>
+</body>
+</html>
