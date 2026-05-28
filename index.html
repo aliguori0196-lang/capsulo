@@ -1393,6 +1393,10 @@ async function doLogout(){
   document.getElementById('authEmail').value='';
   document.getElementById('authPass').value='';
   document.getElementById('authError').textContent='';
+  var btn=document.getElementById('authMode');
+  btn.disabled=false;
+  btn.textContent='Accedi';
+  btn.dataset.mode='login';
 }
 
 function toggleAuthMode(){
