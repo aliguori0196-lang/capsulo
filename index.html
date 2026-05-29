@@ -80,7 +80,9 @@ header p{font-size:12px;color:var(--text2);margin-top:2px;}
 .metric-value{font-family:var(--font-head);font-size:24px;font-weight:500;}
 .metric-sub{font-size:11px;color:var(--text3);margin-top:3px;}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:1.25rem;}
-@media(max-width:640px){.grid-2{grid-template-columns:1fr;}}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:1.25rem;}
+@media(max-width:900px){.grid-3{grid-template-columns:1fr 1fr;}}
+@media(max-width:640px){.grid-2,.grid-3{grid-template-columns:1fr;}}
 .card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--rl);padding:1rem 1.25rem;margin-bottom:1.25rem;}
 .section-title{font-size:10px;font-weight:500;color:var(--text2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;}
 .legend-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px;font-size:12px;color:var(--text2);}
@@ -222,7 +224,7 @@ body.theme-dark .modal-box h2{color:var(--bisque);}
 
   <div class="metrics-row" id="metricsRow"></div>
 
-  <div class="grid-2">
+  <div class="grid-3">
     <div class="card" style="margin-bottom:0">
       <div class="section-title">Distribuzione per gusto</div>
       <div class="legend-row" id="legendFlavor"></div>
@@ -231,6 +233,10 @@ body.theme-dark .modal-box h2{color:var(--bisque);}
     <div class="card" style="margin-bottom:0">
       <div class="section-title">Scorte in esaurimento</div>
       <div class="scarcity-row" id="scarcityList"></div>
+    </div>
+    <div class="card" style="margin-bottom:0">
+      <div class="section-title">Scorte in scadenza</div>
+      <div class="scarcity-row" id="expiringList"></div>
     </div>
   </div>
 
@@ -269,11 +275,6 @@ body.theme-dark .modal-box h2{color:var(--bisque);}
     </div>
   </div>
 
-  <div class="card">
-    <div class="section-title">Proiezione consumo — prossime 8 settimane</div>
-    <div class="legend-row" id="legendProj"></div>
-    <div style="position:relative;height:200px"><canvas id="chartProj" role="img" aria-label="Proiezione consumo settimanale capsule"></canvas></div>
-  </div>
 
   <div class="card accordion-card">
     <div class="accordion-header" onclick="toggleAccordion('recipesBody', this)">
@@ -602,6 +603,379 @@ const RECIPES=[
   {name:'Hazelnut Frappuccino',capsules:['Nocciola','Roasted Hazelnut','Arpeggio','Altissio'],line:'both',tag:'starbucks',icon:'🌰',
    ingredients:['60 ml espresso freddo','200 ml latte intero','100 g ghiaccio','3 cucchiai sciroppo nocciola','Panna montata'],
    steps:['Frulla ghiaccio, latte, caffè e sciroppo di nocciola.','Versa in un bicchiere grande.','Completa con panna e granella di nocciole.']},
+
+  // ── CLASSICI ITALIANI ─────────────────────────────────────
+  {name:'Bicerin',capsules:['Napoli','Kazaar','Ristretto Intenso'],line:'both',tag:'hot',icon:'☕',
+   ingredients:['25 ml ristretto','Cioccolata calda','Crema di latte'],
+   steps:['Prepara la cioccolata calda e versala in un bicchiere.','Estrai il ristretto e versalo sopra senza mescolare.','Aggiungi la crema di latte in superficie — i tre strati non vanno mescolati.']},
+  {name:'Caffè al Pistacchio',capsules:['Pistachio Vanilla','Altissio','Ristretto Intenso'],line:'both',tag:'milk',icon:'🍵',
+   ingredients:['40 ml espresso','2 cucchiai crema di pistacchio','100 ml latte caldo schiumato'],
+   steps:['Scalda la crema di pistacchio con un po\' di latte.','Estrai l\'espresso nella tazza.','Versa il latte pistacchio schiumato sopra.','Guarnisci con granella di pistacchi.']},
+  {name:'Caffè alla Nocciola',capsules:['Nocciola','Roasted Hazelnut'],line:'both',tag:'milk',icon:'🌰',
+   ingredients:['40 ml espresso','1 cucchiaio crema nocciola','80 ml latte caldo'],
+   steps:['Sciogli la crema di nocciola nel latte caldo.','Estrai l\'espresso nella tazza.','Versa il latte alla nocciola sopra l\'espresso.']},
+  {name:'Caffè Leccese',capsules:['Ice Leggero','Ice Forte','Freddo Delicato'],line:'both',tag:'cold',icon:'🧊',
+   ingredients:['40 ml espresso freddo','100 ml latte di mandorla','Ghiaccio'],
+   steps:['Riempi un bicchiere di ghiaccio.','Versa il latte di mandorla.','Estrai il caffè e versalo sopra senza mescolare.','Mescola solo al momento di bere.']},
+  {name:'Caffè Salentino',capsules:['Ice Leggero','Kazaar','Ristretto'],line:'both',tag:'cold',icon:'🧊',
+   ingredients:['40 ml espresso freddo','100 ml latte di mandorla','Ghiaccio','Zucchero a piacere'],
+   steps:['Sciogli lo zucchero nel caffè caldo.','Lascia raffreddare.','Versa su ghiaccio con latte di mandorla.']},
+  {name:'Espresso Siciliano',capsules:['Ispirazione Sicilia','Ispirazione Palermo','Napoli'],line:'original',tag:'hot',icon:'☕',
+   ingredients:['40 ml espresso','Scorza arancia','Pizzico cannella'],
+   steps:['Estrai l\'espresso.','Aggiungi la scorza d\'arancia e un pizzico di cannella.','Servi subito in una tazzina calda.']},
+  {name:'Espresso Veneziano',capsules:['Venezia','Arpeggio','Caffè Florian'],line:'original',tag:'hot',icon:'☕',
+   ingredients:['40 ml espresso','1 cucchiaio panna montata'],
+   steps:['Estrai l\'espresso nella tazzina.','Aggiungi un ciuffo di panna montata sopra.','Non mescolare — si beve attraverso la panna.']},
+  {name:'Granita al Caffè',capsules:['Napoli','Kazaar','Ristretto Intenso'],line:'both',tag:'cold',icon:'🧊',
+   ingredients:['200 ml caffè forte zuccherato','Ghiaccio tritato','Panna montata'],
+   steps:['Prepara il caffè forte e dolcifica.','Lascia raffreddare completamente.','Versa nel bicchiere con ghiaccio tritato fine.','Completa con panna montata.']},
+  {name:'Marocchino',capsules:['Ristretto','Napoli','Kazaar'],line:'both',tag:'milk',icon:'🍫',
+   ingredients:['25 ml ristretto','Cacao amaro in polvere','Schiuma di latte'],
+   steps:['Cospargi cacao sul fondo della tazzina.','Estrai il ristretto sopra.','Aggiungi la schiuma di latte.','Cospargi altro cacao in superficie.']},
+  {name:'Shakerato alla Vaniglia',capsules:['Vaniglia','Sweet Vanilla','Livanto'],line:'both',tag:'cold',icon:'🧊',
+   ingredients:['40 ml espresso freddo','Ghiaccio','1 cucchiaino zucchero vanigliato'],
+   steps:['Estrai il caffè e lascia raffreddare.','Agita con ghiaccio e zucchero vanigliato nello shaker.','Filtra in un bicchiere freddo.']},
+
+  // ── CLASSICI INTERNAZIONALI ───────────────────────────────
+  {name:'Café au Lait',capsules:['Melozio','Livanto','Lungo','Inizio'],line:'both',tag:'milk',icon:'🥛',
+   ingredients:['100 ml caffè lungo','100 ml latte caldo'],
+   steps:['Estrai il caffè lungo nella tazza grande.','Scalda il latte senza schiumarlo.','Versa latte e caffè insieme in proporzione 1:1.']},
+  {name:'Café Liégeois',capsules:['Vaniglia','Sweet Vanilla'],line:'both',tag:'cold',icon:'🍨',
+   ingredients:['60 ml espresso freddo','1 pallina gelato al caffè','Panna montata'],
+   steps:['Versa il gelato al caffè in un bicchiere.','Aggiungi il caffè freddo.','Completa con panna montata generosa.']},
+  {name:'Café Noisette',capsules:['Nocciola','Volluto','Capriccio'],line:'both',tag:'milk',icon:'🌰',
+   ingredients:['40 ml espresso','30 ml latte caldo','Crema nocciola'],
+   steps:['Estrai l\'espresso.','Aggiungi crema di nocciola.','Versa un goccio di latte caldo sopra.']},
+  {name:'Café Viennois',capsules:['Arpeggio','Roma','Venezia'],line:'both',tag:'milk',icon:'🥛',
+   ingredients:['40 ml espresso','Panna montata abbondante','Cacao facoltativo'],
+   steps:['Estrai l\'espresso in una tazza.','Aggiungi abbondante panna montata sopra.','Servi con cacao in polvere facoltativo.']},
+  {name:'Cortado',capsules:['Corto','Scuro','Altissio','Diavolitto'],line:'both',tag:'milk',icon:'☕',
+   ingredients:['40 ml espresso','40 ml latte caldo (non schiumato)'],
+   steps:['Estrai l\'espresso in una tazzina.','Aggiungi uguale quantità di latte caldo senza schiuma.','Il latte non deve coprire il caffè — rapporto 1:1.']},
+  {name:'Espresso Macchiato',capsules:['Napoli','Arpeggio','Kazaar','Diavolitto'],line:'both',tag:'milk',icon:'☕',
+   ingredients:['40 ml espresso','1 cucchiaio schiuma latte'],
+   steps:['Estrai l\'espresso nella tazzina.','Aggiungi una piccola "macchia" di schiuma di latte sopra.']},
+  {name:'Einspänner',capsules:['Arpeggio','Venezia','Roma'],line:'both',tag:'hot',icon:'☕',
+   ingredients:['60 ml espresso doppio','Panna montata generosa'],
+   steps:['Estrai il doppio espresso in un bicchiere alto.','Copri con abbondante panna montata fredda.','Si beve il caffè caldo attraverso la panna fredda senza mescolare.']},
+  {name:'Reverso',capsules:['Bianco Piccolo For Milk','Bianco Doppio For Milk'],line:'vertuo',tag:'milk',icon:'🥛',
+   ingredients:['1 capsula Bianco For Milk','150 ml latte caldo schiumato'],
+   steps:['Versa prima il latte nella tazza.','Estrai il caffè sopra il latte.','Il caffè "affonda" creando un effetto inverso al latte macchiato.']},
+
+  // ── LATTE & COFFEE SHOP STYLE ─────────────────────────────
+  {name:'Almond Latte',capsules:['Melozio','Livanto','Chiaro'],line:'both',tag:'milk',icon:'🥛',
+   ingredients:['40 ml espresso','150 ml latte di mandorla caldo'],
+   steps:['Scalda il latte di mandorla.','Estrai l\'espresso nella tazza.','Versa il latte di mandorla sopra.']},
+  {name:'Brown Sugar Latte',capsules:['Melozio','Livanto','Bianco Piccolo For Milk'],line:'both',tag:'milk',icon:'🤎',
+   ingredients:['40 ml espresso','150 ml latte intero','1 cucchiaio zucchero di canna'],
+   steps:['Sciogli lo zucchero di canna nell\'espresso caldo.','Scalda e schiumata il latte.','Versa sopra l\'espresso.']},
+  {name:'Chestnut Coco Latte',capsules:['Melozio','Solelio'],line:'vertuo',tag:'milk',icon:'🌰',
+   ingredients:['150 ml caffè','100 ml latte di cocco','1 cucchiaio crema castagne'],
+   steps:['Sciogli la crema di castagne nel latte di cocco caldo.','Estrai il caffè.','Unisci e mescola.']},
+  {name:'Cinnamon Latte',capsules:['Pumpkin Spice Cake','Caramello','Livanto'],line:'both',tag:'milk',icon:'🍂',
+   ingredients:['40 ml espresso','150 ml latte intero','Cannella macinata','Sciroppo cannella'],
+   steps:['Estrai l\'espresso con sciroppo di cannella.','Scalda e schiumata il latte.','Versa sopra e cospargi cannella.']},
+  {name:'Coconut Latte',capsules:['Coconut Vanilla Over Ice','Melozio'],line:'both',tag:'milk',icon:'🥥',
+   ingredients:['40 ml espresso','150 ml latte di cocco caldo'],
+   steps:['Estrai l\'espresso.','Scalda il latte di cocco.','Versa sopra il caffè.']},
+  {name:'Gingerbread Latte',capsules:['Gingerbread','Pumpkin Spice Cake'],line:'both',tag:'milk',icon:'🍪',
+   ingredients:['40 ml espresso','150 ml latte','Sciroppo pan di zenzero','Panna montata'],
+   steps:['Estrai l\'espresso con sciroppo gingerbread.','Scalda il latte.','Versa il latte e completa con panna.']},
+  {name:'Honey Oat Latte',capsules:['Melozio','Livanto','Inizio'],line:'both',tag:'milk',icon:'🍯',
+   ingredients:['40 ml espresso','150 ml latte di avena','1 cucchiaino miele'],
+   steps:['Sciogli il miele nell\'espresso caldo.','Scalda il latte di avena.','Versa sopra il caffè al miele.']},
+  {name:'Lavender Vanilla Latte',capsules:['Vaniglia','Sweet Vanilla'],line:'both',tag:'milk',icon:'💜',
+   ingredients:['40 ml espresso','150 ml latte','Sciroppo lavanda','Estratto vaniglia'],
+   steps:['Estrai l\'espresso con sciroppo lavanda.','Scalda il latte con estratto vaniglia.','Versa sopra il caffè.']},
+  {name:'Maple Latte',capsules:['Maple Pecan','Melozio','Livanto'],line:'both',tag:'milk',icon:'🍁',
+   ingredients:['40 ml espresso','150 ml latte','Sciroppo acero'],
+   steps:['Estrai l\'espresso con sciroppo d\'acero.','Scalda e schiumata il latte.','Versa sopra il caffè.']},
+  {name:'Mocha Latte',capsules:['Cioccolatino','Rich Chocolate','Intenso'],line:'both',tag:'milk',icon:'🍫',
+   ingredients:['40 ml espresso','150 ml latte','2 cucchiai cacao o cioccolato fuso'],
+   steps:['Sciogli il cacao nel latte caldo.','Estrai l\'espresso.','Unisci e schiumata.']},
+  {name:'Salted Caramel Latte',capsules:['Caramello','Golden Caramel'],line:'both',tag:'milk',icon:'🧂',
+   ingredients:['40 ml espresso','150 ml latte','Caramello salato','Pizzico di sale'],
+   steps:['Estrai l\'espresso con salsa caramello.','Scalda il latte.','Versa sopra e aggiungi un pizzico di sale marino.']},
+  {name:'White Mocha',capsules:['Cioccolatino','Vaniglia'],line:'both',tag:'milk',icon:'🤍',
+   ingredients:['40 ml espresso','150 ml latte','Sciroppo cioccolato bianco'],
+   steps:['Estrai l\'espresso con sciroppo cioccolato bianco.','Scalda e schiumata il latte.','Versa sopra il caffè.']},
+  {name:'Winter Spice Latte',capsules:['Pumpkin Spice Cake','Gingerbread','Cinnamon & Candied Tamarind'],line:'both',tag:'milk',icon:'❄️',
+   ingredients:['40 ml espresso','150 ml latte','Mix spezie invernali','Panna montata'],
+   steps:['Estrai l\'espresso con spezie.','Scalda il latte.','Versa e completa con panna.']},
+
+  // ── ICED & COLD COFFEE ────────────────────────────────────
+  {name:'Coffee Lemonade',capsules:['Ice Leggero','Ice Forte','Freddo Delicato'],line:'both',tag:'cold',icon:'🍋',
+   ingredients:['60 ml espresso freddo','150 ml limonata fresca','Ghiaccio'],
+   steps:['Riempi un bicchiere di ghiaccio.','Versa la limonata.','Aggiungi l\'espresso freddo dall\'alto senza mescolare.']},
+  {name:'Iced Caramel Latte',capsules:['Caramello','Golden Caramel'],line:'both',tag:'cold',icon:'🧊',
+   ingredients:['40 ml espresso freddo','150 ml latte freddo','Salsa caramello','Ghiaccio'],
+   steps:['Riempi un bicchiere di ghiaccio.','Versa il latte.','Aggiungi l\'espresso e la salsa caramello.','Mescola leggermente.']},
+  {name:'Iced Dirty Chai',capsules:['Ice Leggero','Chiaro'],line:'both',tag:'cold',icon:'🧊',
+   ingredients:['40 ml espresso freddo','150 ml chai tea freddo','Latte freddo','Ghiaccio'],
+   steps:['Prepara il chai tea freddo.','Riempi un bicchiere di ghiaccio.','Versa chai e latte.','Aggiungi l\'espresso sopra.']},
+  {name:'Iced Matcha Espresso Fusion',capsules:['Ice Leggero','Chiaro','Inizio'],line:'both',tag:'cold',icon:'🍵',
+   ingredients:['40 ml espresso freddo','1 cucchiaino matcha','150 ml latte freddo','Ghiaccio'],
+   steps:['Sciogli il matcha in un po\' d\'acqua calda.','Riempi un bicchiere di ghiaccio.','Versa il latte e il matcha.','Aggiungi l\'espresso sopra.']},
+  {name:'Pistachio Vanilla Iced Latte',capsules:['Pistachio Vanilla','Altissio'],line:'both',tag:'cold',icon:'🍵',
+   ingredients:['40 ml espresso freddo','150 ml latte','Crema pistacchio','Ghiaccio'],
+   steps:['Mescola latte e crema di pistacchio.','Riempi un bicchiere di ghiaccio.','Versa il latte al pistacchio.','Aggiungi l\'espresso dall\'alto.']},
+  {name:'Strawberry Raspberry Coffee Smoothie',capsules:['Melozio','Solelio'],line:'vertuo',tag:'cold',icon:'🍓',
+   ingredients:['150 ml caffè freddo','100 g fragole','50 g lamponi','150 ml yogurt','Ghiaccio'],
+   steps:['Frulla fragole, lamponi, yogurt e ghiaccio.','Aggiungi il caffè freddo.','Frulla brevemente.','Servi subito.']},
+
+  // ── TONIC & SPARKLING ─────────────────────────────────────
+  {name:'Basil Espresso Tonic',capsules:['Ice Forte','Freddo Intenso'],line:'both',tag:'cold',icon:'🌿',
+   ingredients:['40 ml espresso freddo','150 ml acqua tonica','Foglie basilico fresco','Fettina lime'],
+   steps:['Muddla le foglie di basilico nel bicchiere.','Aggiungi ghiaccio e acqua tonica.','Versa l\'espresso dall\'alto.','Guarnisci con lime.']},
+  {name:'Coconut Espresso Tonic',capsules:['Coconut Vanilla Over Ice','Ice Forte'],line:'both',tag:'cold',icon:'🥥',
+   ingredients:['40 ml espresso freddo','100 ml acqua tonica','30 ml crema cocco','Lime','Ghiaccio'],
+   steps:['Riempi un bicchiere di ghiaccio.','Versa crema di cocco e acqua tonica.','Aggiungi l\'espresso dall\'alto.','Guarnisci con lime.']},
+  {name:'Cold Brew Tonic',capsules:['Cold Brew Style Intense','Stormio'],line:'both',tag:'cold',icon:'🫧',
+   ingredients:['100 ml cold brew','150 ml acqua tonica ghiacciata','Ghiaccio'],
+   steps:['Riempi un bicchiere di ghiaccio.','Versa l\'acqua tonica.','Aggiungi il cold brew dall\'alto.']},
+  {name:'Dirty Chai Espresso Tonic',capsules:['Ice Forte','Freddo Intenso'],line:'both',tag:'cold',icon:'🌶️',
+   ingredients:['40 ml espresso freddo','150 ml acqua tonica','50 ml chai tea freddo'],
+   steps:['Prepara il chai tea e lascia raffreddare.','Riempi un bicchiere di ghiaccio.','Versa tonica e chai.','Aggiungi l\'espresso sopra.']},
+  {name:'Espresso Grapefruit Tonic',capsules:['Ice Forte','Freddo Intenso'],line:'both',tag:'cold',icon:'🍊',
+   ingredients:['40 ml espresso freddo','150 ml acqua tonica','Succo pompelmo','Ghiaccio'],
+   steps:['Riempi un bicchiere di ghiaccio.','Versa tonica e succo di pompelmo.','Aggiungi l\'espresso dall\'alto.']},
+  {name:'Espresso Orange Tonic',capsules:['Ice Forte','Freddo Intenso'],line:'both',tag:'cold',icon:'🍊',
+   ingredients:['40 ml espresso freddo','150 ml acqua tonica','Scorza arancia','Ghiaccio'],
+   steps:['Riempi un bicchiere di ghiaccio con scorza d\'arancia.','Versa l\'acqua tonica.','Aggiungi l\'espresso dall\'alto.']},
+  {name:'Hibiscus Coffee Tonic',capsules:['Sweet Almond & Hibiscus'],line:'both',tag:'cold',icon:'🌺',
+   ingredients:['40 ml espresso freddo','150 ml acqua tonica','30 ml infuso ibisco','Ghiaccio'],
+   steps:['Prepara l\'infuso di ibisco e raffreddalo.','Riempi un bicchiere di ghiaccio.','Versa tonica e ibisco.','Aggiungi l\'espresso sopra.']},
+  {name:'Matcha Espresso Tonic',capsules:['Ice Forte','Freddo Intenso'],line:'both',tag:'cold',icon:'🍵',
+   ingredients:['40 ml espresso freddo','150 ml acqua tonica','1 cucchiaino matcha','Lime','Ghiaccio'],
+   steps:['Sciogli il matcha in acqua calda.','Riempi un bicchiere di ghiaccio.','Versa tonica e matcha.','Aggiungi l\'espresso e lime.']},
+  {name:'Mediterranean Espresso Tonic',capsules:['Ice Forte'],line:'both',tag:'cold',icon:'🌿',
+   ingredients:['40 ml espresso freddo','150 ml acqua tonica','Rametto rosmarino','Scorza limone','Ghiaccio'],
+   steps:['Muddla il rosmarino nel bicchiere.','Aggiungi ghiaccio, scorza limone e tonica.','Versa l\'espresso dall\'alto.']},
+  {name:'Mint Espresso Tonic',capsules:['Ice Leggero','Ice Forte'],line:'both',tag:'cold',icon:'🌿',
+   ingredients:['40 ml espresso freddo','150 ml acqua tonica','Foglie menta','Ghiaccio'],
+   steps:['Muddla la menta nel bicchiere.','Aggiungi ghiaccio e tonica.','Versa l\'espresso dall\'alto.']},
+  {name:'Tropical Coffee Tonic',capsules:['Coconut Vanilla Over Ice','Ice Forte'],line:'both',tag:'cold',icon:'🍍',
+   ingredients:['40 ml espresso freddo','150 ml acqua tonica','50 ml succo frutta tropicale','Ghiaccio'],
+   steps:['Riempi un bicchiere di ghiaccio.','Versa tonica e succo tropicale.','Aggiungi l\'espresso dall\'alto.']},
+  {name:'Yuzu Vanilla Espresso Tonic',capsules:['Yuzu Vanilla Over Ice'],line:'both',tag:'cold',icon:'🍋',
+   ingredients:['40 ml espresso freddo','150 ml acqua tonica','30 ml succo yuzu','Scorza lime','Ghiaccio'],
+   steps:['Riempi un bicchiere di ghiaccio.','Versa tonica e succo yuzu.','Aggiungi l\'espresso dall\'alto.','Guarnisci con scorza lime.']},
+
+  // ── MATCHA + COFFEE ───────────────────────────────────────
+  {name:'Matcha Affogato Coffee',capsules:['Altissio','Diavolitto','Ristretto Intenso'],line:'both',tag:'cold',icon:'🍨',
+   ingredients:['25 ml ristretto bollente','1 cucchiaino matcha','1 pallina gelato vaniglia'],
+   steps:['Dissolvi il matcha in pochissima acqua calda.','Metti il gelato nella coppetta.','Versa il ristretto bollente e il matcha sopra.']},
+  {name:'Matcha Espresso Latte',capsules:['Chiaro','Inizio','Livanto'],line:'both',tag:'milk',icon:'🍵',
+   ingredients:['40 ml espresso','1 cucchiaino matcha','150 ml latte caldo schiumato'],
+   steps:['Dissolvi il matcha in acqua calda.','Estrai l\'espresso.','Unisci matcha e caffè.','Versa il latte schiumato sopra.']},
+  {name:'Pistachio Matcha Latte',capsules:['Pistachio Vanilla'],line:'both',tag:'milk',icon:'🍵',
+   ingredients:['40 ml espresso','1 cucchiaino matcha','150 ml latte pistacchio'],
+   steps:['Dissolvi matcha in acqua calda.','Estrai l\'espresso.','Scalda il latte di pistacchio.','Unisci tutto e mescola.']},
+  {name:'Strawberry Matcha Coffee Latte',capsules:['Vaniglia','Sweet Vanilla'],line:'both',tag:'milk',icon:'🍓',
+   ingredients:['40 ml espresso','1 cucchiaino matcha','100 ml latte','50 ml purea fragola'],
+   steps:['Prepara il latte matcha con la purea di fragola.','Estrai l\'espresso.','Versa il latte matcha fragola sopra il caffè.']},
+  {name:'Honey Matcha Coffee',capsules:['Melozio','Inizio'],line:'both',tag:'milk',icon:'🍯',
+   ingredients:['40 ml espresso','1 cucchiaino matcha','150 ml latte avena','1 cucchiaino miele'],
+   steps:['Dissolvi matcha e miele in acqua calda.','Estrai l\'espresso.','Scalda il latte di avena.','Unisci tutto.']},
+  {name:'Coconut Matcha Coffee',capsules:['Coconut Vanilla Over Ice','Melozio'],line:'both',tag:'cold',icon:'🥥',
+   ingredients:['40 ml espresso freddo','1 cucchiaino matcha','150 ml latte cocco','Ghiaccio'],
+   steps:['Dissolvi matcha in acqua calda e raffredda.','Riempi un bicchiere di ghiaccio.','Versa latte cocco e matcha.','Aggiungi l\'espresso.']},
+
+  // ── CHAI + COFFEE ─────────────────────────────────────────
+  {name:'Dirty Chai Latte',capsules:['Chiaro','Scuro','Livanto'],line:'both',tag:'milk',icon:'🌶️',
+   ingredients:['40 ml espresso','150 ml chai tea caldo','Latte schiumato'],
+   steps:['Prepara il chai tea caldo.','Estrai l\'espresso.','Versa l\'espresso nel chai.','Aggiungi schiuma di latte sopra.']},
+  {name:'Chai Espresso Frappé',capsules:['Freddo Intenso','Odacio'],line:'both',tag:'cold',icon:'🧊',
+   ingredients:['60 ml espresso freddo','100 ml chai tea freddo','100 ml latte','Ghiaccio'],
+   steps:['Frulla tutto con il ghiaccio.','Versa in un bicchiere grande.','Completa con panna facoltativa.']},
+  {name:'Gingerbread Dirty Chai',capsules:['Gingerbread'],line:'both',tag:'milk',icon:'🍪',
+   ingredients:['40 ml espresso','100 ml chai tea','50 ml latte','Cannella'],
+   steps:['Prepara il chai tea.','Estrai l\'espresso.','Unisci e aggiungi latte caldo.','Cospargi cannella.']},
+  {name:'Honey Oat Dirty Chai',capsules:['Melozio','Inizio'],line:'both',tag:'milk',icon:'🍯',
+   ingredients:['40 ml espresso','100 ml chai tea','100 ml latte avena','Miele'],
+   steps:['Prepara il chai.','Estrai il caffè.','Unisci con latte di avena e miele.']},
+  {name:'Maple Dirty Chai',capsules:['Maple Pecan'],line:'both',tag:'milk',icon:'🍁',
+   ingredients:['40 ml espresso','100 ml chai tea','100 ml latte','Sciroppo acero'],
+   steps:['Prepara il chai.','Estrai l\'espresso con sciroppo d\'acero.','Unisci e aggiungi latte.']},
+  {name:'Vanilla Dirty Chai',capsules:['Vaniglia','Sweet Vanilla'],line:'both',tag:'milk',icon:'💛',
+   ingredients:['40 ml espresso','100 ml chai tea','100 ml latte','Estratto vaniglia'],
+   steps:['Prepara il chai con vaniglia.','Estrai l\'espresso.','Unisci e aggiungi latte caldo.']},
+
+  // ── DESSERT COFFEE DRINKS ─────────────────────────────────
+  {name:'Affogato al Pistacchio',capsules:['Pistachio Vanilla','Altissio'],line:'both',tag:'hot',icon:'🍨',
+   ingredients:['25 ml ristretto bollente','1 pallina gelato al pistacchio'],
+   steps:['Metti il gelato al pistacchio nella coppetta.','Versa il ristretto bollente direttamente sopra.','Servi immediatamente.']},
+  {name:'Banana Coffee Cream',capsules:['Melozio','Solelio'],line:'both',tag:'cold',icon:'🍌',
+   ingredients:['150 ml caffè freddo','1 banana','100 ml crema latte','Ghiaccio'],
+   steps:['Frulla banana con crema di latte.','Aggiungi il caffè freddo.','Versa su ghiaccio.']},
+  {name:'Coffee Cheesecake Latte',capsules:['Vaniglia','Sweet Vanilla'],line:'both',tag:'milk',icon:'🍰',
+   ingredients:['40 ml espresso','150 ml latte','2 cucchiai crema cheesecake','Biscotto sbriciolato'],
+   steps:['Mescola la crema cheesecake con il latte caldo.','Estrai l\'espresso.','Unisci e guarnisci con biscotto sbriciolato.']},
+  {name:'Coffee Milkshake',capsules:['Vaniglia','Sweet Vanilla','Melozio'],line:'both',tag:'cold',icon:'🥤',
+   ingredients:['60 ml espresso freddo','2 palline gelato vaniglia','150 ml latte','Ghiaccio'],
+   steps:['Frulla gelato, latte e caffè freddo.','Versa in un bicchiere alto.','Guarnisci con panna montata.']},
+  {name:'Tiramisu Latte',capsules:['Arpeggio','Venezia','Toccanto'],line:'both',tag:'milk',icon:'🍰',
+   ingredients:['40 ml espresso','150 ml latte','1 cucchiaio mascarpone','Cacao amaro'],
+   steps:['Sciogli il mascarpone nel latte caldo.','Estrai l\'espresso.','Versa il latte al mascarpone.','Cospargi cacao amaro in superficie.']},
+  {name:'White Chocolate Strawberry Latte',capsules:['Vaniglia','Sweet Vanilla'],line:'both',tag:'milk',icon:'🍓',
+   ingredients:['40 ml espresso','150 ml latte','Sciroppo cioccolato bianco','Purea fragola'],
+   steps:['Sciogli il cioccolato bianco nel latte.','Aggiungi la purea di fragola.','Estrai l\'espresso.','Versa il latte fragola sopra.']},
+
+  // ── MOCKTAIL / COFFEE BAR ─────────────────────────────────
+  {name:'Coffee Mojito',capsules:['Ice Forte','Ice Leggero'],line:'both',tag:'cold',icon:'🍹',
+   ingredients:['60 ml espresso freddo','Foglie menta fresca','Succo lime','Zucchero canna','Soda'],
+   steps:['Muddla menta, lime e zucchero.','Aggiungi ghiaccio e soda.','Versa l\'espresso freddo sopra.']},
+  {name:'Coffee Spritz',capsules:['Ice Forte','Freddo Intenso'],line:'both',tag:'cold',icon:'🥂',
+   ingredients:['60 ml espresso freddo','100 ml prosecco o soda','Bitter aromatico','Arancia'],
+   steps:['Versa il bitter in un bicchiere con ghiaccio.','Aggiungi prosecco o soda.','Versa l\'espresso sopra.','Guarnisci con arancia.']},
+  {name:'Lucky Red',capsules:['Freddo Intenso','Diavolitto'],line:'both',tag:'cold',icon:'🍹',
+   ingredients:['60 ml espresso freddo','Bitter rosso','Ghiaccio','Arancia'],
+   steps:['Versa il bitter in un bicchiere di ghiaccio.','Aggiungi l\'espresso freddo.','Guarnisci con arancia.']},
+  {name:'Sparkling Summer Coffee',capsules:['Ice Leggero','Freddo Delicato'],line:'both',tag:'cold',icon:'☀️',
+   ingredients:['60 ml espresso freddo','150 ml soda','Succo lime','Ghiaccio'],
+   steps:['Riempi un bicchiere di ghiaccio.','Versa soda e lime.','Aggiungi l\'espresso sopra.']},
+
+  // ── GLOBAL FUSION & MODERNI ───────────────────────────────
+  {name:'Cold Brew Basil Smash',capsules:['Cold Brew Style Intense','Stormio'],line:'both',tag:'cold',icon:'🌿',
+   ingredients:['100 ml cold brew','Foglie basilico fresco','Soda','Lime','Ghiaccio'],
+   steps:['Muddla il basilico con il lime.','Aggiungi ghiaccio e cold brew.','Topping di soda.']},
+  {name:'Earl Grey Coffee Latte',capsules:['Volluto','Ethiopia','Cosi'],line:'both',tag:'milk',icon:'🫖',
+   ingredients:['40 ml espresso','100 ml tè Earl Grey','100 ml latte caldo'],
+   steps:['Prepara il tè Earl Grey forte.','Estrai l\'espresso.','Unisci tè e caffè.','Aggiungi il latte caldo.']},
+  {name:'London Fog Coffee Latte',capsules:['Vaniglia','Sweet Vanilla'],line:'both',tag:'milk',icon:'🫖',
+   ingredients:['40 ml espresso','100 ml tè Earl Grey','100 ml latte vaniglia'],
+   steps:['Prepara il tè Earl Grey.','Estrai l\'espresso.','Scalda il latte con vaniglia.','Unisci tutto.']},
+  {name:'Sweet Almond Hibiscus Latte',capsules:['Sweet Almond & Hibiscus'],line:'both',tag:'milk',icon:'🌺',
+   ingredients:['40 ml espresso','150 ml latte','30 ml infuso ibisco'],
+   steps:['Prepara l\'infuso di ibisco.','Estrai l\'espresso.','Scalda il latte.','Unisci tutto.']},
+  {name:'Thai Tea Coffee Latte',capsules:['Ice Leggero','Freddo Delicato'],line:'both',tag:'cold',icon:'🧡',
+   ingredients:['40 ml espresso freddo','100 ml thai tea','100 ml latte condensato','Ghiaccio'],
+   steps:['Prepara il thai tea e raffredda.','Riempi un bicchiere di ghiaccio con latte condensato.','Versa il thai tea.','Aggiungi l\'espresso sopra.']},
+
+  // ── ASIA / JAPAN / KOREA ──────────────────────────────────
+  {name:'Dalgona Coffee',capsules:['Napoli','Kazaar','Ristretto Intenso','Diavolitto'],line:'both',tag:'cold',icon:'🇰🇷',
+   ingredients:['2 cucchiai caffè solubile','2 cucchiai zucchero','2 cucchiai acqua calda','200 ml latte freddo','Ghiaccio'],
+   steps:['Monta caffè solubile, zucchero e acqua calda fino a crema densa.','Riempi un bicchiere di ghiaccio e latte freddo.','Metti la crema di caffè sopra senza mescolare.','Mescola prima di bere.']},
+  {name:'Okinawa Brown Sugar Latte',capsules:['Chiaro','Inizio','Livanto'],line:'both',tag:'milk',icon:'🤎',
+   ingredients:['40 ml espresso','150 ml latte','Brown sugar Okinawa','Latte condensato'],
+   steps:['Caramella il brown sugar con latte condensato.','Estrai l\'espresso.','Scalda il latte.','Unisci con lo sciroppo brown sugar.']},
+  {name:'Seoul Banana Latte',capsules:['Vaniglia','Sweet Vanilla'],line:'both',tag:'milk',icon:'🍌',
+   ingredients:['40 ml espresso','150 ml banana milk coreano'],
+   steps:['Estrai l\'espresso.','Scalda il banana milk.','Versa sopra il caffè.']},
+  {name:'Vietnamese Iced Coffee',capsules:['Napoli','Kazaar','Ristretto Intenso'],line:'both',tag:'cold',icon:'🇻🇳',
+   ingredients:['60 ml espresso forte','3 cucchiai latte condensato zuccherato','Ghiaccio abbondante'],
+   steps:['Metti il latte condensato in un bicchiere.','Versa l\'espresso caldo sopra e mescola.','Aggiungi abbondante ghiaccio.','Mescola fino a raffreddare completamente.']},
+  {name:'Yuzu Coffee Soda',capsules:['Yuzu Vanilla Over Ice'],line:'both',tag:'cold',icon:'🍋',
+   ingredients:['40 ml espresso freddo','150 ml soda','30 ml succo yuzu','Ghiaccio'],
+   steps:['Riempi un bicchiere di ghiaccio.','Versa soda e yuzu.','Aggiungi l\'espresso dall\'alto.']},
+  {name:'Hojicha Coffee Latte',capsules:['Melozio','Livanto'],line:'both',tag:'milk',icon:'🍵',
+   ingredients:['40 ml espresso','1 cucchiaino hojicha','150 ml latte caldo'],
+   steps:['Prepara il tè hojicha.','Estrai l\'espresso.','Unisci e aggiungi latte caldo.']},
+
+  // ── MIDDLE EAST ───────────────────────────────────────────
+  {name:'Arabic Spiced Coffee Latte',capsules:['Istanbul Espresso','India'],line:'both',tag:'hot',icon:'🌙',
+   ingredients:['40 ml espresso','150 ml latte','Cardamomo','Pizzico cannella e zafferano'],
+   steps:['Estrai l\'espresso con spezie arabe.','Scalda il latte speziato.','Versa il latte aromatico sopra.']},
+  {name:'Date Coffee Shake',capsules:['Intenso','Stormio'],line:'both',tag:'cold',icon:'🌴',
+   ingredients:['150 ml caffè freddo','4 datteri','150 ml latte','Ghiaccio'],
+   steps:['Frulla datteri e latte fino a crema.','Aggiungi il caffè freddo.','Versa su ghiaccio.']},
+  {name:'Dubai Chocolate Coffee',capsules:['Cioccolatino','Rich Chocolate'],line:'both',tag:'hot',icon:'🍫',
+   ingredients:['40 ml espresso','Cioccolato fondente fuso','Granella pistacchio','Panna montata'],
+   steps:['Versa il cioccolato fuso nella tazza.','Estrai l\'espresso.','Aggiungi panna e granella pistacchio.']},
+  {name:'Honey Saffron Latte',capsules:['Ethiopia','Volluto','Cosi'],line:'both',tag:'hot',icon:'🌼',
+   ingredients:['40 ml espresso','150 ml latte','Miele','Pizzico zafferano'],
+   steps:['Scalda il latte con lo zafferano.','Estrai l\'espresso con miele.','Versa il latte allo zafferano.']},
+  {name:'Pistachio Rose Latte',capsules:['Pistachio Vanilla'],line:'both',tag:'milk',icon:'🌹',
+   ingredients:['40 ml espresso','150 ml latte','Crema pistacchio','Acqua di rose'],
+   steps:['Mescola latte, crema pistacchio e acqua di rose.','Scalda il tutto.','Estrai l\'espresso.','Versa sopra il caffè.']},
+  {name:'Turkish Mocha',capsules:['Kazaar','Napoli','Ristretto Intenso'],line:'both',tag:'hot',icon:'🇹🇷',
+   ingredients:['25 ml ristretto','Cacao amaro','½ cucchiaino cardamomo','Zucchero'],
+   steps:['Mescola cacao e cardamomo nella tazzina.','Estrai il ristretto sopra.','Mescola e servi caldo.']},
+
+  // ── LATIN AMERICA ─────────────────────────────────────────
+  {name:'Café con Dulce de Leche',capsules:['Caramello','Golden Caramel'],line:'both',tag:'milk',icon:'🍮',
+   ingredients:['40 ml espresso','150 ml latte','2 cucchiai dulce de leche'],
+   steps:['Sciogli il dulce de leche nel latte caldo.','Estrai l\'espresso.','Versa il latte caramellato sopra.']},
+  {name:'Café Helado',capsules:['Ice Leggero','Freddo Delicato'],line:'both',tag:'cold',icon:'🧊',
+   ingredients:['60 ml espresso freddo','150 ml latte freddo','Ghiaccio'],
+   steps:['Riempi un bicchiere di ghiaccio.','Versa il latte.','Aggiungi l\'espresso sopra.']},
+  {name:'Coconut Tres Leches Coffee',capsules:['Coconut Vanilla Over Ice','Melozio'],line:'both',tag:'cold',icon:'🥥',
+   ingredients:['60 ml espresso freddo','Latte condensato','Latte evaporato','Latte cocco','Ghiaccio'],
+   steps:['Mescola i tre tipi di latte.','Versa su ghiaccio.','Aggiungi l\'espresso freddo sopra.']},
+  {name:'Horchata Coffee',capsules:['Melozio','Livanto'],line:'both',tag:'cold',icon:'🍚',
+   ingredients:['60 ml espresso freddo','150 ml horchata (bevanda riso)','Ghiaccio','Cannella'],
+   steps:['Riempi un bicchiere di ghiaccio.','Versa l\'horchata.','Aggiungi l\'espresso sopra.','Cospargi cannella.']},
+  {name:'Mexican Mocha',capsules:['Cioccolatino','Rich Chocolate','Intenso'],line:'both',tag:'hot',icon:'🌶️',
+   ingredients:['40 ml espresso','150 ml latte','Cacao amaro','Peperoncino di Cayenna','Zucchero'],
+   steps:['Mescola cacao con peperoncino e zucchero.','Estrai l\'espresso sul mix.','Scalda il latte.','Versa il latte speziato sopra.']},
+
+  // ── USA / THIRD WAVE ──────────────────────────────────────
+  {name:'Brown Sugar Shaken Espresso',capsules:['Altissio','Ristretto Intenso','Diavolitto'],line:'both',tag:'cold',icon:'🤎',
+   ingredients:['60 ml espresso freddo','2 cucchiai brown sugar','Cannella','200 ml latte avena','Ghiaccio'],
+   steps:['Agita espresso, brown sugar e cannella con ghiaccio nello shaker.','Riempi un bicchiere di ghiaccio fresco.','Versa il latte di avena.','Aggiungi il mix shakerato sopra.']},
+  {name:'Campfire Mocha',capsules:['Cioccolatino','Rich Chocolate'],line:'both',tag:'milk',icon:'🔥',
+   ingredients:['40 ml espresso','150 ml latte','Cacao amaro','Marshmallow tostati'],
+   steps:['Prepara il mocha al cioccolato.','Aggiungi marshmallow.','Tosta leggermente con fiamma.']},
+  {name:'Cookie Butter Latte',capsules:['Vaniglia','Sweet Vanilla'],line:'both',tag:'milk',icon:'🍪',
+   ingredients:['40 ml espresso','150 ml latte','2 cucchiai burro speculoos','Biscotto sbriciolato'],
+   steps:['Sciogli il burro speculoos nel latte caldo.','Estrai l\'espresso.','Versa il latte speculoos.','Guarnisci con biscotto sbriciolato.']},
+  {name:'Peanut Butter Coffee Shake',capsules:['Melozio','Intenso'],line:'both',tag:'cold',icon:'🥜',
+   ingredients:['150 ml caffè freddo','2 cucchiai peanut butter','150 ml latte','Ghiaccio'],
+   steps:['Frulla tutto con il ghiaccio.','Versa in un bicchiere alto.','Guarnisci con peanut butter.']},
+  {name:"S'mores Latte",capsules:['Cioccolatino','Vaniglia'],line:'both',tag:'milk',icon:'🍫',
+   ingredients:['40 ml espresso','150 ml latte','Cioccolato fuso','Marshmallow tostati','Graham cracker'],
+   steps:['Versa cioccolato fuso nella tazza.','Estrai l\'espresso.','Aggiungi latte caldo.','Completa con marshmallow tostati e graham cracker sbriciolato.']},
+  {name:'Toffee Nut Latte',capsules:['Nocciola','Roasted Hazelnut'],line:'both',tag:'milk',icon:'🌰',
+   ingredients:['40 ml espresso','150 ml latte','Sciroppo toffee nocciola','Panna montata'],
+   steps:['Estrai l\'espresso con sciroppo toffee nocciola.','Scalda il latte.','Versa sopra e completa con panna.']},
+
+  // ── NORDIC / FESTIVE ──────────────────────────────────────
+  {name:'Cinnamon Roll Latte',capsules:['Gingerbread','Pumpkin Spice Cake'],line:'both',tag:'milk',icon:'🍥',
+   ingredients:['40 ml espresso','150 ml latte','Sciroppo cannella','Glassa zucchero'],
+   steps:['Estrai l\'espresso con sciroppo cannella.','Scalda il latte.','Versa sopra il caffè.','Filo di glassa alla vaniglia sopra.']},
+  {name:'Nordic Vanilla Coffee',capsules:['Vaniglia','Sweet Vanilla'],line:'both',tag:'cold',icon:'❄️',
+   ingredients:['150 ml caffè freddo forte','Cold foam vaniglia','Ghiaccio'],
+   steps:['Versa il caffè freddo su ghiaccio.','Prepara il cold foam montando panna leggera con vaniglia.','Versa il cold foam sopra.']},
+  {name:'Peppermint Mocha',capsules:['Peppermint Pinwheel','Cioccolatino'],line:'both',tag:'milk',icon:'🌿',
+   ingredients:['40 ml espresso','150 ml latte','Cacao amaro','Sciroppo menta','Panna montata'],
+   steps:['Estrai l\'espresso con sciroppo menta.','Scalda il latte al cacao.','Versa e completa con panna.']},
+  {name:'Speculoos Latte',capsules:['Nocciola','Vaniglia'],line:'both',tag:'milk',icon:'🍪',
+   ingredients:['40 ml espresso','150 ml latte','2 cucchiai pasta speculoos'],
+   steps:['Sciogli la pasta speculoos nel latte caldo.','Estrai l\'espresso.','Versa il latte speculoos sopra.']},
+  {name:'Winter Honey Latte',capsules:['Pumpkin Spice Cake','Gingerbread'],line:'both',tag:'milk',icon:'🍯',
+   ingredients:['40 ml espresso','150 ml latte','Miele millefiori','Cannella'],
+   steps:['Scalda il latte con miele e cannella.','Estrai l\'espresso.','Versa il latte al miele sopra.']},
+
+  // ── AFRICA / TROPICAL ─────────────────────────────────────
+  {name:'Ethiopian Honey Latte',capsules:['Ethiopia','Master Origins Ethiopia'],line:'both',tag:'milk',icon:'🍯',
+   ingredients:['40 ml espresso','150 ml latte','Miele d\'acacia','Cardamomo'],
+   steps:['Estrai l\'espresso etiopico.','Scalda il latte con miele e cardamomo.','Versa il latte aromatico sopra.']},
+  {name:'Mango Espresso Cooler',capsules:['Ice Leggero','Freddo Delicato'],line:'both',tag:'cold',icon:'🥭',
+   ingredients:['40 ml espresso freddo','100 ml succo mango','Ghiaccio','Soda facoltativa'],
+   steps:['Riempi un bicchiere di ghiaccio.','Versa il succo di mango.','Aggiungi l\'espresso sopra.','Topping di soda facoltativo.']},
+  {name:'Pineapple Espresso Soda',capsules:['Freddo Delicato','Ice Leggero'],line:'both',tag:'cold',icon:'🍍',
+   ingredients:['40 ml espresso freddo','100 ml succo ananas','150 ml soda','Ghiaccio'],
+   steps:['Riempi un bicchiere di ghiaccio.','Versa soda e succo ananas.','Aggiungi l\'espresso sopra.']},
+
+  // ── WELLNESS COFFEE ───────────────────────────────────────
+  {name:'Adaptogen Latte',capsules:['Melozio','Livanto'],line:'both',tag:'milk',icon:'🌿',
+   ingredients:['40 ml espresso','150 ml latte','Ashwagandha in polvere','Miele'],
+   steps:['Mescola l\'ashwagandha nel latte caldo.','Estrai l\'espresso.','Versa il latte adattogeno sopra.','Dolcifica con miele.']},
+  {name:'Collagen Vanilla Latte',capsules:['Vaniglia','Sweet Vanilla'],line:'both',tag:'milk',icon:'✨',
+   ingredients:['40 ml espresso','150 ml latte','1 misurino collagene in polvere','Estratto vaniglia'],
+   steps:['Sciogli il collagene nel latte caldo con vaniglia.','Estrai l\'espresso.','Versa il latte al collagene sopra.']},
+  {name:'Mushroom Mocha',capsules:['Cioccolatino','Rich Chocolate','Intenso'],line:'both',tag:'hot',icon:'🍄',
+   ingredients:['40 ml espresso','150 ml latte','Cacao','Mushroom blend (lion\'s mane o chaga)'],
+   steps:['Mescola mushroom blend e cacao nel latte caldo.','Estrai l\'espresso.','Versa il latte funzionale sopra.']},
+  {name:'Protein Iced Latte',capsules:['Double Espresso Dolce','Double Espresso Scuro'],line:'vertuo',tag:'cold',icon:'💪',
+   ingredients:['80 ml espresso freddo','200 ml latte','1 misurino proteine vaniglia','Ghiaccio'],
+   steps:['Frulla le proteine con il latte freddo.','Riempi un bicchiere di ghiaccio.','Aggiungi il latte proteico.','Versa l\'espresso sopra.']},
+  {name:'Turmeric Honey Latte',capsules:['Melozio','Livanto'],line:'both',tag:'milk',icon:'🌿',
+   ingredients:['40 ml espresso','150 ml latte','Curcuma in polvere','Miele','Pizzico pepe nero'],
+   steps:['Scalda il latte con curcuma, miele e pepe nero.','Estrai l\'espresso.','Versa il golden milk sopra.']},
+  {name:'Vanilla Oat Protein Coffee',capsules:['Vaniglia','Sweet Vanilla'],line:'both',tag:'cold',icon:'💛',
+   ingredients:['40 ml espresso freddo','200 ml latte avena','1 misurino proteine vaniglia','Ghiaccio'],
+   steps:['Frulla proteine e latte di avena.','Riempi un bicchiere di ghiaccio.','Versa il latte proteico.','Aggiungi l\'espresso sopra.']},
 ];
 
 
@@ -734,8 +1108,14 @@ function renderMetrics(caps){
 
 // ── RENDER TABLE ─────────────────────────────────────────────
 function renderTable(caps){
+  // sort: by expiry ASC, then by qty ASC
+  var sorted=caps.slice().sort(function(a,b){
+    var ea=a.expiry||'9999-99', eb=b.expiry||'9999-99';
+    if(ea!==eb) return ea<eb?-1:1;
+    return a.qty-b.qty;
+  });
   var max=Math.max.apply(null,caps.map(function(c){return c.qty;}).concat([1]));
-  document.getElementById('inventoryBody').innerHTML=caps.map(function(c,i){
+  document.getElementById('inventoryBody').innerHTML=sorted.map(function(c,i){
     var pct=Math.round(c.qty/max*100);
     var lvl=qtyLevel(c);
     var fc=lvl==='low'?'low':lvl==='medium'?'medium':'';
@@ -744,12 +1124,14 @@ function renderTable(caps){
     var boxes=Math.ceil(needed/10);
     var boxCell;
     if(boxes===0){
-      boxCell='<span style="font-size:12px;color:#3B6D11;font-weight:500">✓ scorta ok</span>';
+      boxCell='<span style="font-size:12px;color:#3B6D11;font-weight:500">✓ ok</span>';
     } else {
       var urg=boxes>=2?'#A32D2D':'#854F0B';
-      boxCell='<span style="font-weight:600;font-size:14px;color:'+urg+'">'+boxes+'</span><span style="font-size:12px;color:var(--text2);margin-left:4px">box</span><span style="font-size:11px;color:var(--text3);margin-left:5px">('+boxes*10+' caps.)</span>';
+      boxCell='<span style="font-weight:600;font-size:14px;color:'+urg+'">'+boxes+'</span><span style="font-size:12px;color:var(--text2);margin-left:4px">box</span><span style="font-size:11px;color:var(--text3);margin-left:5px">('+boxes*10+')</span>';
     }
-    return '<tr>'+
+    var expStatus=expiryStatus(c.expiry);
+    var rowStyle=expStatus==='danger'?'background:rgba(162,45,45,0.04)':expStatus==='warn'?'background:rgba(133,79,11,0.04)':'';
+    return '<tr style="'+rowStyle+'">'+
       '<td><span class="dot" style="background:'+COLORS[i%COLORS.length]+'"></span> '+c.name+'</td>'+
       '<td><span class="intensity-bar"><span class="intensity-fill" style="width:'+Math.round(c.intensity/13*100)+'%;background:'+COLORS[i%COLORS.length]+'"></span></span> <span style="font-size:12px;color:var(--text2)">'+c.intensity+'</span></td>'+
       '<td><div class="qty-cell"><span style="font-weight:500;min-width:22px">'+c.qty+'</span><div class="qty-bar"><div class="qty-fill '+fc+'" style="width:'+pct+'%"></div></div></div></td>'+
@@ -777,27 +1159,6 @@ function renderCharts(caps){
     type:'doughnut',
     data:{labels:labels,datasets:[{data:caps.map(function(c){return c.qty;}),backgroundColor:colors,borderWidth:0}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}
-  });
-  var weekLabels=[];
-  for(var i=0;i<8;i++) weekLabels.push('Sett. '+(i+1));
-  document.getElementById('legendProj').innerHTML=caps.map(function(c,i){
-    return '<span class="legend-item"><span class="legend-sq" style="background:'+COLORS[i%COLORS.length]+'"></span>'+c.name+'</span>';
-  }).join('');
-  if(chartProj) chartProj.destroy();
-  chartProj=new Chart(document.getElementById('chartProj'),{
-    type:'line',
-    data:{labels:weekLabels,datasets:caps.map(function(c,i){
-      var data=[];
-      for(var w=0;w<8;w++) data.push(Math.max(0,c.qty-c.weeklyRate*(w+1)));
-      return{label:c.name,data:data,borderColor:COLORS[i%COLORS.length],backgroundColor:COLORS[i%COLORS.length]+'18',borderWidth:2,pointRadius:3,fill:false,tension:.3};
-    })},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false}},
-      scales:{
-        y:{beginAtZero:true,grid:{color:'rgba(128,128,128,0.08)'},ticks:{color:'#888'},title:{display:true,text:'Capsule rimanenti',font:{size:11},color:'#888'}},
-        x:{grid:{color:'rgba(128,128,128,0.05)'},ticks:{color:'#888'}}
-      }
-    }
   });
 }
 
@@ -1124,6 +1485,32 @@ function renderRecipes(){
   }
 }
 
+// ── RENDER EXPIRING ──────────────────────────────────────────
+function renderExpiring(caps){
+  var expiring=caps.filter(function(c){ return expiryStatus(c.expiry)!=='ok'; })
+    .sort(function(a,b){ return (a.expiry||'').localeCompare(b.expiry||''); });
+  var el=document.getElementById('expiringList');
+  if(!el) return;
+  if(!expiring.length){
+    el.innerHTML='<p style="font-size:13px;color:#2d6b3a;font-weight:500">✓ Nessuna capsula in scadenza</p>';
+    return;
+  }
+  var maxQty=Math.max.apply(null,caps.map(function(c){return c.qty;}).concat([1]));
+  el.innerHTML=expiring.map(function(c){
+    var idx=caps.indexOf(c);
+    var s=expiryStatus(c.expiry);
+    var fc=s==='danger'?'#E24B4A':'#EF9F27';
+    var badge=s==='danger'
+      ?'<span style="font-size:10px;font-weight:500;padding:2px 6px;border-radius:3px;background:#fce8e8;color:#A32D2D;margin-left:6px">Scaduta</span>'
+      :'<span style="font-size:10px;font-weight:500;padding:2px 6px;border-radius:3px;background:#faeeda;color:#854F0B;margin-left:6px">'+c.expiry.replace('-','/')+'</span>';
+    return '<div class="scarcity-item" style="border:0.5px solid rgba(133,79,11,0.2);border-radius:6px;padding:6px 8px;">'+
+      '<span class="scarcity-name" style="color:var(--text)"><span class="dot" style="background:'+COLORS[idx%COLORS.length]+'"></span>'+c.name+badge+'</span>'+
+      '<div class="scarcity-track"><div class="scarcity-fill" style="width:'+Math.round(c.qty/maxQty*100)+'%;background:'+fc+'"></div></div>'+
+      '<span class="scarcity-qty" style="color:'+fc+';font-weight:600">'+c.qty+'</span>'+
+    '</div>';
+  }).join('');
+}
+
 // ── RENDER SHOPPING LIST ─────────────────────────────────────
 function renderShoppingList(){
   var filter=document.getElementById('shoppingFilter').value;
@@ -1219,9 +1606,8 @@ function render(){
   renderTable(caps);
   renderCharts(caps);
   renderScarcity(caps);
+  renderExpiring(caps);
   renderRecipeFilter();
-  // ricette e lista spesa si aggiornano all'apertura dell'accordion
-  // se già aperti, aggiorna subito
   if(document.getElementById('recipesBody').style.display!=='none') renderRecipes();
   if(document.getElementById('shoppingBody').style.display!=='none') renderShoppingList();
 }
