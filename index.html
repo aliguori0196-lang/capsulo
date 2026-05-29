@@ -1370,13 +1370,16 @@ function renderTable(caps){
 
 // ── RENDER CHARTS ────────────────────────────────────────────
 function renderCharts(caps){
+  var legendEl=document.getElementById('legendFlavor');
+  var chartEl=document.getElementById('chartFlavor');
+  if(!legendEl||!chartEl) return;
   var labels=caps.map(function(c){return c.name;});
   var colors=caps.map(function(_,i){return COLORS[i%COLORS.length];});
-  document.getElementById('legendFlavor').innerHTML=caps.map(function(c,i){
+  legendEl.innerHTML=caps.map(function(c,i){
     return '<span class="legend-item"><span class="legend-sq" style="background:'+COLORS[i%COLORS.length]+'"></span>'+c.name+' ('+c.qty+')</span>';
   }).join('');
   if(chartFlavor) chartFlavor.destroy();
-  chartFlavor=new Chart(document.getElementById('chartFlavor'),{
+  chartFlavor=new Chart(chartEl,{
     type:'doughnut',
     data:{labels:labels,datasets:[{data:caps.map(function(c){return c.qty;}),backgroundColor:colors,borderWidth:0}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}
