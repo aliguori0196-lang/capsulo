@@ -19,48 +19,52 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --espresso:#3A2119;--chambray:#79A3C3;--bisque:#EBCDB7;--glacier:#D2E2EC;--clay:#957662;
+  --espresso:#3A2119;--chambray:#3A6E94;--bisque:#EBCDB7;--glacier:#D2E2EC;--clay:#4A2810;
   --bg:#ffffff;--bg2:#F7F3EE;--bg3:#F5F0E8;
-  --text:#3A2119;--text2:#957662;--text3:#b8a090;
-  --border:rgba(58,33,25,0.12);--border2:rgba(58,33,25,0.22);
-  --accent-orig:#3A2119;--accent-vert:#79A3C3;
+  --text:#1A0E08;--text2:#4A2810;--text3:#6B3E20;
+  --border:rgba(58,33,25,0.18);--border2:rgba(58,33,25,0.32);
+  --accent-orig:#3A2119;--accent-vert:#3A7299;
   --r:8px;--rl:12px;
   --font-head:'Playfair Display',Georgia,serif;
   --font-body:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 }
 @media(prefers-color-scheme:dark){
   :root{
-    --bg:#1e1510;--bg2:#2a1d15;--bg3:#1a100a;
-    --text:#EBCDB7;--text2:#957662;--text3:#6b4f40;
-    --border:rgba(235,205,183,0.12);--border2:rgba(235,205,183,0.22);
+    --bg:#1C1009;--bg2:#2C1A10;--bg3:#221309;
+    --text:#F0DCC8;--text2:#D4A882;--text3:#A07860;
+    --border:rgba(240,220,200,0.15);--border2:rgba(240,220,200,0.28);
+    --chambray:#85B4D4;--clay:#D4A882;
   }
-  .badge-ok{background:#0d2a1a!important;color:#7AB894!important;}
-  .badge-warn{background:#2a1a05!important;color:#EF9F27!important;}
-  .badge-danger{background:#2a0d0d!important;color:#F09595!important;}
+  .badge-ok{background:#0a2016!important;color:#6DBE8A!important;}
+  .badge-warn{background:#261800!important;color:#F5B942!important;}
+  .badge-danger{background:#280808!important;color:#F07878!important;}
 }
 body.theme-light{
   --bg:#ffffff;--bg2:#F7F3EE;--bg3:#F5F0E8;
-  --text:#3A2119;--text2:#957662;--text3:#b8a090;
-  --border:rgba(58,33,25,0.12);--border2:rgba(58,33,25,0.22);
+  --text:#1A0E08;--text2:#4A2810;--text3:#6B3E20;
+  --border:rgba(58,33,25,0.18);--border2:rgba(58,33,25,0.32);
+  --chambray:#3A6E94;--clay:#4A2810;
 }
-body.theme-light .badge-ok{background:#e6f0e8!important;color:#2d6b3a!important;}
-body.theme-light .badge-warn{background:#faeeda!important;color:#854F0B!important;}
-body.theme-light .badge-danger{background:#fce8e8!important;color:#a32d2d!important;}
+body.theme-light .badge-ok{background:#C8EDD6!important;color:#0F4020!important;}
+body.theme-light .badge-warn{background:#FAE0A0!important;color:#5C2E00!important;}
+body.theme-light .badge-danger{background:#F9C8C8!important;color:#6E0E0E!important;}
 body.theme-dark{
-  --bg:#1e1510;--bg2:#2a1d15;--bg3:#1a100a;
-  --text:#EBCDB7;--text2:#957662;--text3:#6b4f40;
-  --border:rgba(235,205,183,0.12);--border2:rgba(235,205,183,0.22);
+  --bg:#1C1009;--bg2:#2C1A10;--bg3:#221309;
+  --text:#F0DCC8;--text2:#D4A882;--text3:#A07860;
+  --border:rgba(240,220,200,0.15);--border2:rgba(240,220,200,0.28);
+  --chambray:#85B4D4;--clay:#D4A882;
 }
-body.theme-dark .badge-ok{background:#0d2a1a!important;color:#7AB894!important;}
-body.theme-dark .badge-warn{background:#2a1a05!important;color:#EF9F27!important;}
-body.theme-dark .badge-danger{background:#2a0d0d!important;color:#F09595!important;}
-body{font-family:var(--font-body);background:var(--bg3);color:var(--text);min-height:100vh;padding:1.5rem 0.75rem;}
-@media(min-width:600px){body{padding:2rem 1rem;}}
-.container{max-width:980px;margin:0 auto;}
+body.theme-dark .badge-ok{background:#0a2016!important;color:#6DBE8A!important;}
+body.theme-dark .badge-warn{background:#261800!important;color:#F5B942!important;}
+body.theme-dark .badge-danger{background:#280808!important;color:#F07878!important;}
+body{font-family:var(--font-body);background:var(--bg3);color:var(--text);min-height:100vh;padding:1.5rem 1rem 5rem;}
+@media(min-width:768px){body{padding:2rem 2rem 2rem;}}
+@media(min-width:1200px){body{padding:2rem 3rem;}}
+.container{max-width:1400px;margin:0 auto;}
 .top-bar{text-align:center;margin-bottom:1.5rem;}
-.greeting{font-family:var(--font-head);font-size:26px;font-weight:500;color:var(--espresso);margin-bottom:14px;}
+.greeting{font-family:var(--font-head);font-size:24px;font-weight:500;color:var(--espresso);margin-bottom:14px;}
 @media(prefers-color-scheme:dark){.greeting{color:var(--bisque);}}
-body.theme-dark .greeting{color:var(--bisque);}
+body.theme-dark .greeting{color:#F0DCC8;}
 body.theme-light .greeting{color:var(--espresso);}
 .greeting span{color:var(--chambray);}
 @media(min-width:600px){.greeting{font-size:30px;}}
@@ -169,7 +173,40 @@ input:focus,select:focus{border-color:var(--chambray);box-shadow:0 0 0 2px rgba(
 .tag-hot{background:#fae8e0;color:#7a2e10;}
 .tag-cold{background:#d2e2ec;color:#2a5a7a;}
 .tag-milk{background:#e8ede6;color:#2d5a35;}
-.accordion-card{padding:0 1.25rem;}
+/* ── MOBILE BOTTOM NAV ───────────────────────────────── */
+.bottom-nav{display:none;}
+@media(max-width:767px){
+  .bottom-nav{
+    display:flex;position:fixed;bottom:0;left:0;right:0;z-index:100;
+    background:#F7F3EE;border-top:1px solid rgba(58,33,25,0.25);
+    padding:8px 0 calc(8px + env(safe-area-inset-bottom));
+    justify-content:space-around;align-items:center;
+  }
+  .bn-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;
+    background:none;border:none;color:#3A2119;font-size:10px;font-family:var(--font-body);
+    padding:4px 12px;border-radius:8px;transition:color .15s;}
+  .bn-item.active{color:#3A2119;font-weight:600;}
+  body.theme-dark .bottom-nav{background:#2C1A10;border-top-color:rgba(240,220,200,0.2);}
+  body.theme-dark .bn-item{color:#A07860;}
+  body.theme-dark .bn-item.active{color:var(--chambray);}
+  .bn-item i{font-size:20px;}
+  .bn-item span{font-size:10px;font-weight:500;}
+  /* hide top-bar theme/logout on mobile — moved to settings */
+  .top-bar>div:last-child{display:none;}
+  /* make accordion headers bigger for touch */
+  .accordion-header{padding:1.1rem 1.25rem;}
+  .recipe-cat-header{padding:12px 14px;}
+  /* larger -1 button */
+  .btn-consume{padding:5px 10px;font-size:13px;}
+  /* table scrollable on mobile */
+  .table-wrapper{-webkit-overflow-scrolling:touch;}
+  /* metrics 2 columns on mobile */
+  .metrics-row{grid-template-columns:repeat(2,1fr);}
+}
+@media(min-width:768px){
+  /* desktop: show all sections always visible */
+  .top-bar>div:last-child{display:flex;}
+}
 .accordion-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 0;cursor:pointer;user-select:none;}
 .accordion-header:hover .accordion-icon{color:var(--text);}
 .accordion-icon{font-size:16px;color:var(--text3);transition:transform .2s;}
@@ -255,7 +292,7 @@ body.theme-dark .modal-box h2{color:var(--bisque);}
     </div>
   </div>
 
-  <div class="card">
+  <div id="section-inventory" class="card">
     <div class="section-title">Inventario capsule</div>
     <div class="table-wrapper">
       <table>
@@ -301,13 +338,25 @@ body.theme-dark .modal-box h2{color:var(--bisque);}
         <select id="recipeFilter" onchange="renderRecipes()" style="font-size:12px;padding:5px 10px;width:auto;max-width:220px">
           <option value="all">Tutte le capsule</option>
         </select>
-        <div style="display:flex;gap:6px;margin-left:4px">
+        <div style="display:flex;gap:5px;flex-wrap:wrap;margin-left:4px">
           <button onclick="setRecipeTag('all')" id="rtag-all" class="rtag-btn rtag-active">Tutte</button>
-          <button onclick="setRecipeTag('hot')" id="rtag-hot" class="rtag-btn">☕ Caldo</button>
-          <button onclick="setRecipeTag('milk')" id="rtag-milk" class="rtag-btn">🥛 Con latte</button>
-          <button onclick="setRecipeTag('cold')" id="rtag-cold" class="rtag-btn">🧊 Freddo</button>
-          <button onclick="setRecipeTag('world')" id="rtag-world" class="rtag-btn">🌍 Dal mondo</button>
-          <button onclick="setRecipeTag('starbucks')" id="rtag-starbucks" class="rtag-btn">⭐ Starbucks</button>
+          <button onclick="setRecipeTag('Classici Italiani')" id="rtag-Classici Italiani" class="rtag-btn">🇮🇹 Italiani</button>
+          <button onclick="setRecipeTag('Classici Internazionali')" id="rtag-Classici Internazionali" class="rtag-btn">🌍 Internazionali</button>
+          <button onclick="setRecipeTag('Latte & Coffee Shop')" id="rtag-Latte & Coffee Shop" class="rtag-btn">☕ Latte</button>
+          <button onclick="setRecipeTag('Iced & Cold Coffee')" id="rtag-Iced & Cold Coffee" class="rtag-btn">🧊 Cold</button>
+          <button onclick="setRecipeTag('Tonic & Sparkling')" id="rtag-Tonic & Sparkling" class="rtag-btn">🫧 Tonic</button>
+          <button onclick="setRecipeTag('Matcha & Coffee')" id="rtag-Matcha & Coffee" class="rtag-btn">🍵 Matcha</button>
+          <button onclick="setRecipeTag('Chai & Coffee')" id="rtag-Chai & Coffee" class="rtag-btn">🌶️ Chai</button>
+          <button onclick="setRecipeTag('Dessert Coffee')" id="rtag-Dessert Coffee" class="rtag-btn">🍨 Dessert</button>
+          <button onclick="setRecipeTag('Mocktail')" id="rtag-Mocktail" class="rtag-btn">🍹 Mocktail</button>
+          <button onclick="setRecipeTag('Starbucks Style')" id="rtag-Starbucks Style" class="rtag-btn">⭐ Starbucks</button>
+          <button onclick="setRecipeTag('Asia Japan Korea')" id="rtag-Asia Japan Korea" class="rtag-btn">🏯 Asia</button>
+          <button onclick="setRecipeTag('Middle East')" id="rtag-Middle East" class="rtag-btn">🌙 Middle East</button>
+          <button onclick="setRecipeTag('Latin America')" id="rtag-Latin America" class="rtag-btn">🌮 Latin</button>
+          <button onclick="setRecipeTag('Global Fusion')" id="rtag-Global Fusion" class="rtag-btn">🌐 Global</button>
+          <button onclick="setRecipeTag('Nordic & Festive')" id="rtag-Nordic & Festive" class="rtag-btn">❄️ Nordic</button>
+          <button onclick="setRecipeTag('Africa & Tropical')" id="rtag-Africa & Tropical" class="rtag-btn">🌺 Africa</button>
+          <button onclick="setRecipeTag('Wellness Coffee')" id="rtag-Wellness Coffee" class="rtag-btn">🌿 Wellness</button>
         </div>
       </div>
       <div class="recipes-grid" id="recipesGrid"></div>
@@ -333,7 +382,7 @@ body.theme-dark .modal-box h2{color:var(--bisque);}
     </div>
   </div>
   <div style="text-align:center;padding:1.5rem 0 0.5rem;font-size:11px;color:var(--text3);letter-spacing:.05em">
-    Capsulo <span id="appVersion">v0.3</span>
+    Capsulo <span id="appVersion">v0.3.1</span>
   </div>
 </div>
 
@@ -1347,11 +1396,17 @@ function renderRecipeFilter(){
 
 var activeRecipeTag='all';
 
+var ALL_CATS=['Classici Italiani','Classici Internazionali','Latte & Coffee Shop','Iced & Cold Coffee',
+  'Tonic & Sparkling','Matcha & Coffee','Chai & Coffee','Dessert Coffee','Mocktail','Starbucks Style',
+  'Asia Japan Korea','Middle East','Latin America','Global Fusion','Nordic & Festive','Africa & Tropical','Wellness Coffee'];
+
 function setRecipeTag(tag){
   activeRecipeTag=tag;
-  ['all','hot','milk','cold','world','starbucks'].forEach(function(t){
-    var btn=document.getElementById('rtag-'+t);
-    if(btn) btn.className='rtag-btn'+(t===tag?' rtag-active':'');
+  // reset all buttons
+  document.getElementById('rtag-all').className='rtag-btn'+(tag==='all'?' rtag-active':'');
+  ALL_CATS.forEach(function(cat){
+    var btn=document.getElementById('rtag-'+cat);
+    if(btn) btn.className='rtag-btn'+(cat===tag?' rtag-active':'');
   });
   renderRecipes();
 }
@@ -1564,8 +1619,8 @@ function renderRecipes(){
       (r.capsules||[]).some(function(cap){return cap.toLowerCase()===sel.toLowerCase()||sel.toLowerCase().includes(cap.toLowerCase())||cap.toLowerCase().includes(sel.toLowerCase());})||
       (r.capsulesOriginal||[]).some(function(cap){return cap.toLowerCase().includes(sel.toLowerCase())||sel.toLowerCase().includes(cap.toLowerCase());})||
       (r.capsulesVertuo||[]).some(function(cap){return cap.toLowerCase().includes(sel.toLowerCase())||sel.toLowerCase().includes(cap.toLowerCase());});
-    var tagOk=activeRecipeTag==='all'||r.tag===activeRecipeTag;
-    return lineOk&&capOk&&tagOk;
+    var catOk=activeRecipeTag==='all'||(RECIPE_CATEGORY_MAP[r.name]===activeRecipeTag);
+    return lineOk&&capOk&&catOk;
   });
 
   if(filtered.length===0){
@@ -2040,6 +2095,79 @@ function applyUpdate(){
   <span>☕ Nuova versione disponibile</span>
   <button onclick="applyUpdate()" style="background:var(--bis);color:var(--esp);border:none;border-radius:20px;padding:4px 14px;font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font-body)">Aggiorna</button>
   <button onclick="document.getElementById('updateBanner').style.display='none'" style="background:transparent;border:none;color:rgba(235,205,183,0.5);cursor:pointer;font-size:18px;padding:0 0 0 4px;line-height:1">×</button>
+</div><!-- Mobile Bottom Navigation -->
+<nav class="bottom-nav" role="navigation" aria-label="Navigazione principale">
+  <button class="bn-item active" id="bn-home" onclick="scrollToSection('top')" aria-label="Home">
+    <i class="ti ti-home"></i><span>Home</span>
+  </button>
+  <button class="bn-item" id="bn-inv" onclick="scrollToSection('section-inventory')" aria-label="Inventario">
+    <i class="ti ti-package"></i><span>Inventario</span>
+  </button>
+  <button class="bn-item" id="bn-shop" onclick="scrollToSection('shoppingCard');openAccordion('shoppingBody')" aria-label="Lista spesa">
+    <i class="ti ti-shopping-cart"></i><span>Spesa</span>
+  </button>
+  <button class="bn-item" id="bn-rec" onclick="scrollToSection('recipesBody');openAccordion('recipesBody')" aria-label="Ricette">
+    <i class="ti ti-coffee"></i><span>Ricette</span>
+  </button>
+  <button class="bn-item" id="bn-set" onclick="toggleMobileSettings()" aria-label="Impostazioni">
+    <i class="ti ti-settings"></i><span>Altro</span>
+  </button>
+</nav>
+
+<!-- Mobile settings drawer -->
+<div id="mobileSettingsDrawer" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--bg);border-top:0.5px solid var(--border);border-radius:16px 16px 0 0;padding:1.5rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom));">
+  <div style="width:40px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 1rem;"></div>
+  <div style="font-family:var(--font-head);font-size:16px;color:var(--esp);margin-bottom:1rem;">Impostazioni</div>
+  <div style="display:flex;flex-direction:column;gap:10px;">
+    <button onclick="toggleTheme();toggleMobileSettings()" style="display:flex;align-items:center;gap:12px;background:var(--bg2);border:none;border-radius:var(--r);padding:12px 14px;font-size:14px;color:var(--text);font-family:var(--font-body);cursor:pointer;text-align:left;">
+      <i class="ti ti-sun" id="mobileThemeIcon" style="font-size:18px;color:var(--clay)"></i> Cambia tema
+    </button>
+    <button onclick="doLogout()" style="display:flex;align-items:center;gap:12px;background:var(--bg2);border:none;border-radius:var(--r);padding:12px 14px;font-size:14px;color:var(--text);font-family:var(--font-body);cursor:pointer;text-align:left;">
+      <i class="ti ti-logout" style="font-size:18px;color:var(--clay)"></i> Esci
+    </button>
+    <button onclick="toggleMobileSettings()" style="background:transparent;border:0.5px solid var(--border);border-radius:var(--r);padding:10px;font-size:13px;color:var(--text2);font-family:var(--font-body);cursor:pointer;">
+      Chiudi
+    </button>
+  </div>
 </div>
+<div id="mobileSettingsOverlay" onclick="toggleMobileSettings()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:199;"></div>
+
+<script>
+function scrollToSection(id){
+  if(id==='top'){ window.scrollTo({top:0,behavior:'smooth'}); }
+  else {
+    var el=document.getElementById(id);
+    if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  // update active state
+  document.querySelectorAll('.bn-item').forEach(function(b){ b.classList.remove('active'); });
+}
+
+function openAccordion(bodyId){
+  var body=document.getElementById(bodyId);
+  if(body && body.style.display==='none'){
+    var header=body.previousElementSibling;
+    if(header) toggleAccordion(bodyId, header);
+  }
+}
+
+function toggleMobileSettings(){
+  var drawer=document.getElementById('mobileSettingsDrawer');
+  var overlay=document.getElementById('mobileSettingsOverlay');
+  var isOpen=drawer.style.display!=='none';
+  drawer.style.display=isOpen?'none':'block';
+  overlay.style.display=isOpen?'none':'block';
+}
+
+// update bottom nav active on scroll
+window.addEventListener('scroll', function(){
+  var inv=document.getElementById('section-inventory');
+  if(!inv) return;
+  var bnItems=document.querySelectorAll('.bn-item');
+  var scrollY=window.scrollY;
+  if(scrollY<200){ bnItems[0].classList.add('active'); bnItems[1].classList.remove('active'); }
+  else { bnItems[0].classList.remove('active'); bnItems[1].classList.add('active'); }
+},{passive:true});
+</script>
 </body>
 </html>
