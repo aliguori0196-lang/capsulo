@@ -2237,7 +2237,7 @@ async function doLogin(){
       errEl.textContent='Registrazione completata! Ora accedi.';
       btn.disabled=false; toggleAuthMode(); return;
     }
-    currentUser={id:data.user.id,email:data.user.email,access_token:data.access_token,name:''};
+    currentUser={id:data.user.id,email:data.user.email,access_token:data.access_token,refresh_token:data.refresh_token||'',name:''};
     memData={original:[],vertuo:[]};
     localStorage.setItem('nespresso_session',JSON.stringify(currentUser));
     // show dashboard immediately, load data in background
@@ -2311,12 +2311,39 @@ var savedSession=null;
 try{ savedSession=JSON.parse(localStorage.getItem('nespresso_session')||'null'); }catch(e){}
 if(savedSession && savedSession.access_token){
   currentUser=savedSession;
-  // show immediately with cached name, refresh data in background
   showDashboard(currentUser.name||currentUser.email.split('@')[0]);
   Promise.all([loadFromCloud(), loadProfile()]).then(function(){
-    document.getElementById('greetName').textContent=currentUser.name||currentUser.email.split('@')[0];
-    render();
-  });
+    if(memData.original.length===0 && memData.vertuo.length===0){
+      // verifica se il token è ancora valido
+      fetch(SUPA_URL+'/rest/v1/capsules?select=id&limit=1',{
+        headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+currentUser.access_token}
+      }).then(function(r){
+        if(r.status===401||r.status===403){
+          // token scaduto — ri-autentica silenziosamente
+          fetch(SUPA_URL+'/auth/v1/token?grant_type=refresh_token',{
+            method:'POST',
+            headers:{'Content-Type':'application/json','apikey':SUPA_KEY},
+            body:JSON.stringify({refresh_token:savedSession.refresh_token||''})
+          }).then(function(r2){ return r2.json(); }).then(function(d2){
+            if(d2.access_token){
+              currentUser.access_token=d2.access_token;
+              localStorage.setItem('nespresso_session',JSON.stringify(currentUser));
+              return Promise.all([loadFromCloud(),loadProfile()]);
+            } else {
+              doLogout();
+            }
+          }).then(function(){
+            if(currentUser) render();
+          }).catch(function(){ doLogout(); });
+        } else {
+          render();
+        }
+      }).catch(function(){ render(); });
+    } else {
+      document.getElementById('greetName').textContent=currentUser.name||currentUser.email.split('@')[0];
+      render();
+    }
+  }).catch(function(){ doLogout(); });
 }
 
 function toggleAccordion(bodyId, header){
