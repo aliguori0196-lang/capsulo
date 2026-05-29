@@ -1,4 +1,4 @@
-const CACHE_NAME = 'capsulo-v13';
+const CACHE_NAME = 'capsulo-v14';
 const STATIC = [
   'https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css',
   'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js'
