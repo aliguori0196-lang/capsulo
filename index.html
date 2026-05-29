@@ -144,29 +144,30 @@ input:focus,select:focus{border-color:var(--chambray);box-shadow:0 0 0 2px rgba(
 .recipe-cat-icon{font-size:14px;color:var(--clay);transition:transform .2s;}
 .recipe-cat-icon.open{transform:rotate(180deg);}
 .recipe-cat-body{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;padding:10px;background:var(--bg);}
-.recipe-card{background:var(--bg2);border-radius:var(--r);padding:.85rem 1rem;border:0.5px solid var(--border);}
+.recipe-card{background:#EDE0D4;border-radius:var(--r);padding:.85rem 1rem;border:0.5px solid rgba(58,33,25,0.25);}
+body.theme-dark .recipe-card{background:#3A2010;}
 .recipe-card-header{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;}
 .recipe-icon{font-size:20px;flex-shrink:0;line-height:1;}
-.recipe-name{font-family:var(--font-head);font-size:13px;font-weight:500;color:var(--esp);}
-.recipe-capsule{font-size:10px;color:var(--clay);margin-top:2px;}
-.recipe-body{font-size:11px;color:var(--clay);line-height:1.5;}
+.recipe-name{font-family:var(--font-head);font-size:13px;font-weight:500;color:var(--text);}
+.recipe-capsule{font-size:10px;color:var(--text2);margin-top:2px;}
+.recipe-body{font-size:11px;color:var(--text2);line-height:1.5;}
 .recipe-ing{margin-bottom:5px;}
 .recipe-ing strong{color:var(--text);font-weight:500;font-size:10px;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:2px;}
 .recipe-steps{padding-left:12px;}
 .recipe-steps li{margin-bottom:2px;}
 .recipe-tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:3px;margin-top:6px;font-weight:500;}
-.tag-world{background:#f0ece6;color:#5c3d1e;}
-.tag-starbucks{background:#e8f0e8;color:#1e5c2e;}
-.recipe-compat{margin-bottom:7px;padding-bottom:7px;border-bottom:0.5px solid var(--border);}
-.compat-row{display:flex;align-items:baseline;gap:6px;margin-bottom:3px;font-size:11px;}
+.tag-world{background:#e8ddd4;color:#4A2810;}
+.tag-starbucks{background:#d4e4d0;color:#1a4a20;}
+.recipe-compat{margin-bottom:7px;padding-bottom:7px;border-bottom:0.5px solid rgba(58,33,25,0.2);}
+.compat-row{display:flex;align-items:baseline;gap:6px;margin-bottom:4px;font-size:11px;}
 .compat-row:last-child{margin-bottom:0;}
-.compat-label{font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--bg);border-radius:3px;padding:1px 5px;flex-shrink:0;}
-.compat-row:first-child .compat-label{background:var(--esp);}
-.compat-row:last-child .compat-label{background:var(--cha);}
-.compat-caps{color:var(--clay);line-height:1.4;}
-.recipe-extras{margin-top:7px;padding-top:6px;border-top:0.5px solid var(--border);}
-.recipe-extras-label{font-size:9px;font-weight:500;color:var(--clay);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px;}
-.recipe-extra-pill{display:inline-block;font-size:10px;background:rgba(121,163,195,0.15);color:var(--cha, #79A3C3);border:0.5px solid rgba(121,163,195,0.3);border-radius:3px;padding:1px 6px;margin:1px 2px 1px 0;}
+.compat-label{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:#fff;border-radius:3px;padding:2px 6px;flex-shrink:0;}
+.compat-row:first-child .compat-label{background:#3A2119;}
+.compat-row:last-child .compat-label{background:#3A6E94;}
+.compat-caps{color:var(--text2);line-height:1.4;font-size:11px;}
+.recipe-extras{margin-top:7px;padding-top:6px;border-top:0.5px solid rgba(58,33,25,0.2);}
+.recipe-extras-label{font-size:9px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px;}
+.recipe-extra-pill{display:inline-block;font-size:10px;background:rgba(58,33,25,0.12);color:var(--text2);border:0.5px solid rgba(58,33,25,0.2);border-radius:3px;padding:1px 6px;margin:1px 2px 1px 0;}
 .rtag-btn{background:transparent;border:0.5px solid var(--border2);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--clay);cursor:pointer;font-family:var(--font-body);transition:background .15s,color .15s;}
 .rtag-btn:hover{background:var(--bg2);}
 .rtag-active{background:var(--esp)!important;color:var(--bis)!important;border-color:var(--esp)!important;}
@@ -1402,11 +1403,16 @@ var ALL_CATS=['Classici Italiani','Classici Internazionali','Latte & Coffee Shop
 
 function setRecipeTag(tag){
   activeRecipeTag=tag;
-  // reset all buttons
   document.getElementById('rtag-all').className='rtag-btn'+(tag==='all'?' rtag-active':'');
   ALL_CATS.forEach(function(cat){
     var btn=document.getElementById('rtag-'+cat);
     if(btn) btn.className='rtag-btn'+(cat===tag?' rtag-active':'');
+    // auto-open matching category, close others when filtering
+    if(tag==='all'){
+      openCategories[cat]=false;
+    } else {
+      openCategories[cat]=true;
+    }
   });
   renderRecipes();
 }
@@ -2097,16 +2103,16 @@ function applyUpdate(){
   <button onclick="document.getElementById('updateBanner').style.display='none'" style="background:transparent;border:none;color:rgba(235,205,183,0.5);cursor:pointer;font-size:18px;padding:0 0 0 4px;line-height:1">×</button>
 </div><!-- Mobile Bottom Navigation -->
 <nav class="bottom-nav" role="navigation" aria-label="Navigazione principale">
-  <button class="bn-item active" id="bn-home" onclick="scrollToSection('top')" aria-label="Home">
+  <button class="bn-item active" id="bn-home" onclick="scrollToSection('top','bn-home')" aria-label="Home">
     <i class="ti ti-home"></i><span>Home</span>
   </button>
-  <button class="bn-item" id="bn-inv" onclick="scrollToSection('section-inventory')" aria-label="Inventario">
+  <button class="bn-item" id="bn-inv" onclick="scrollToSection('section-inventory','bn-inv')" aria-label="Inventario">
     <i class="ti ti-package"></i><span>Inventario</span>
   </button>
-  <button class="bn-item" id="bn-shop" onclick="scrollToSection('shoppingCard');openAccordion('shoppingBody')" aria-label="Lista spesa">
+  <button class="bn-item" id="bn-shop" onclick="scrollToSection('shoppingCard','bn-shop');openAccordion('shoppingBody')" aria-label="Lista spesa">
     <i class="ti ti-shopping-cart"></i><span>Spesa</span>
   </button>
-  <button class="bn-item" id="bn-rec" onclick="scrollToSection('recipesBody');openAccordion('recipesBody')" aria-label="Ricette">
+  <button class="bn-item" id="bn-rec" onclick="scrollToSection('recipesBody','bn-rec');openAccordion('recipesBody')" aria-label="Ricette">
     <i class="ti ti-coffee"></i><span>Ricette</span>
   </button>
   <button class="bn-item" id="bn-set" onclick="toggleMobileSettings()" aria-label="Impostazioni">
@@ -2133,14 +2139,14 @@ function applyUpdate(){
 <div id="mobileSettingsOverlay" onclick="toggleMobileSettings()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:199;"></div>
 
 <script>
-function scrollToSection(id){
+function scrollToSection(id, btnId){
+  document.querySelectorAll('.bn-item').forEach(function(b){ b.classList.remove('active'); });
+  if(btnId){ var btn=document.getElementById(btnId); if(btn) btn.classList.add('active'); }
   if(id==='top'){ window.scrollTo({top:0,behavior:'smooth'}); }
   else {
     var el=document.getElementById(id);
     if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
   }
-  // update active state
-  document.querySelectorAll('.bn-item').forEach(function(b){ b.classList.remove('active'); });
 }
 
 function openAccordion(bodyId){
@@ -2152,11 +2158,14 @@ function openAccordion(bodyId){
 }
 
 function toggleMobileSettings(){
+  document.querySelectorAll('.bn-item').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('bn-set').classList.add('active');
   var drawer=document.getElementById('mobileSettingsDrawer');
   var overlay=document.getElementById('mobileSettingsOverlay');
   var isOpen=drawer.style.display!=='none';
   drawer.style.display=isOpen?'none':'block';
   overlay.style.display=isOpen?'none':'block';
+  if(isOpen){ document.getElementById('bn-home').classList.add('active'); document.getElementById('bn-set').classList.remove('active'); }
 }
 
 // update bottom nav active on scroll
