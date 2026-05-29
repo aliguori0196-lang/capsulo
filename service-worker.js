@@ -1,4 +1,4 @@
-const CACHE_NAME = 'capsulo-v15';
+const CACHE_NAME = 'capsulo-v18';
 const STATIC = [
   'https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css',
   'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js'
@@ -37,17 +37,22 @@ self.addEventListener('fetch', function(e){
     return;
   }
 
+  // version.json — SEMPRE dalla rete, mai dalla cache
+  if(url.includes('version.json')){
+    e.respondWith(fetch(e.request).catch(function(){
+      return new Response('{"v":"0.0.0"}', {headers:{'Content-Type':'application/json'}});
+    }));
+    return;
+  }
+
   // index.html — network first, cache fallback
-  // questo garantisce che gli aggiornamenti arrivino subito
-  if(url.includes('capsulo.netlify.app') || url.endsWith('/') || url.endsWith('/index.html')){
+  if(url.includes('capsulo-eight.vercel.app') || url.endsWith('/') || url.endsWith('/index.html')){
     e.respondWith(
       fetch(e.request).then(function(response){
-        // aggiorna la cache con la versione fresca
         var clone=response.clone();
         caches.open(CACHE_NAME).then(function(cache){ cache.put(e.request, clone); });
         return response;
       }).catch(function(){
-        // offline: usa cache
         return caches.match(e.request).then(function(cached){
           return cached || caches.match('/index.html');
         });
@@ -56,7 +61,7 @@ self.addEventListener('fetch', function(e){
     return;
   }
 
-  // CDN assets — cache first (non cambiano mai)
+  // CDN assets — cache first
   e.respondWith(
     caches.match(e.request).then(function(cached){
       return cached || fetch(e.request).then(function(response){
