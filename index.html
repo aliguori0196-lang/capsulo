@@ -1510,6 +1510,8 @@ var RECIPE_CATEGORY_MAP = {
   'Caffè al Pistacchio':'Classici Italiani','Caffè alla Nocciola':'Classici Italiani','Caffè Leccese':'Classici Italiani',
   'Caffè Salentino':'Classici Italiani','Espresso Siciliano':'Classici Italiani','Espresso Veneziano':'Classici Italiani',
   'Granita al Caffè':'Classici Italiani','Marocchino':'Classici Italiani','Shakerato alla Vaniglia':'Classici Italiani',
+  'Caffè con Latte di Mandorla':'Classici Italiani','Caffè Frappé Italiano':'Classici Italiani',
+  'Caffè Shakerato':'Classici Italiani','Caffè alla Crema Piemontese':'Classici Italiani',
   // Classici Internazionali
   'Cappuccino':'Classici Internazionali','Latte Macchiato':'Classici Internazionali','Flat White':'Classici Internazionali',
   'Lungo al Latte':'Classici Internazionali','Cappuccino Freddo':'Classici Internazionali','Mocaccino':'Classici Internazionali',
@@ -1517,14 +1519,16 @@ var RECIPE_CATEGORY_MAP = {
   'Chocolate Mug':'Classici Internazionali','Café au Lait':'Classici Internazionali','Café Liégeois':'Classici Internazionali',
   'Café Noisette':'Classici Internazionali','Café Viennois':'Classici Internazionali','Cortado':'Classici Internazionali',
   'Espresso Macchiato':'Classici Internazionali','Einspänner':'Classici Internazionali','Reverso':'Classici Internazionali',
-  'Bianco Doppio con Latte':'Classici Internazionali',
+  'Bianco Doppio con Latte':'Classici Internazionali','Double Espresso on Ice':'Classici Internazionali',
+  'Freddo Cappuccino':'Classici Internazionali','Freddo Espresso':'Classici Internazionali',
+  'Reverso Delicato':'Classici Internazionali','Reverso Intenso':'Classici Internazionali',
   // Latte & Coffee Shop
   'Almond Latte':'Latte & Coffee Shop','Brown Sugar Latte':'Latte & Coffee Shop','Chestnut Coco Latte':'Latte & Coffee Shop',
   'Cinnamon Latte':'Latte & Coffee Shop','Coconut Latte':'Latte & Coffee Shop','Gingerbread Latte':'Latte & Coffee Shop',
   'Honey Oat Latte':'Latte & Coffee Shop','Lavender Vanilla Latte':'Latte & Coffee Shop','Maple Latte':'Latte & Coffee Shop',
   'Mocha Latte':'Latte & Coffee Shop','Salted Caramel Latte':'Latte & Coffee Shop','White Mocha':'Latte & Coffee Shop',
   'Winter Spice Latte':'Latte & Coffee Shop','Pumpkin Spice Latte':'Latte & Coffee Shop','Caramel Macchiato':'Latte & Coffee Shop',
-  'Cinnamon Dolce Latte':'Latte & Coffee Shop',
+  'Cinnamon Dolce Latte':'Latte & Coffee Shop','Caramel Latte Macchiato':'Latte & Coffee Shop',
   // Iced & Cold Coffee
   'Ristretto on Ice':'Iced & Cold Coffee','Espresso Tonic':'Iced & Cold Coffee','Caffè Freddo Shakerato':'Iced & Cold Coffee',
   'Vertuo Cold Brew Style':'Iced & Cold Coffee','Ice Leggero Splash':'Iced & Cold Coffee','Lungo Freddo con Menta':'Iced & Cold Coffee',
@@ -1533,6 +1537,7 @@ var RECIPE_CATEGORY_MAP = {
   'Iced Matcha Espresso Fusion':'Iced & Cold Coffee','Pistachio Vanilla Iced Latte':'Iced & Cold Coffee',
   'Strawberry Raspberry Coffee Smoothie':'Iced & Cold Coffee','Caffè Frappé Italiano':'Iced & Cold Coffee',
   'Freddo Espresso':'Iced & Cold Coffee','Freddo Cappuccino':'Iced & Cold Coffee',
+  'Iced Latte Vanilla':'Iced & Cold Coffee','Iced Coconut Latte':'Iced & Cold Coffee',
   // Tonic & Sparkling
   'Basil Espresso Tonic':'Tonic & Sparkling','Coconut Espresso Tonic':'Tonic & Sparkling','Cold Brew Tonic':'Tonic & Sparkling',
   'Dirty Chai Espresso Tonic':'Tonic & Sparkling','Espresso Grapefruit Tonic':'Tonic & Sparkling','Espresso Orange Tonic':'Tonic & Sparkling',
@@ -1540,9 +1545,12 @@ var RECIPE_CATEGORY_MAP = {
   'Mint Espresso Tonic':'Tonic & Sparkling','Tropical Coffee Tonic':'Tonic & Sparkling','Yuzu Vanilla Espresso Tonic':'Tonic & Sparkling',
   'Cold Brew Basil Smash':'Tonic & Sparkling','Caffè Frizzante':'Tonic & Sparkling','Espresso Frizzante':'Tonic & Sparkling',
   'Sparkling Summer Coffee':'Tonic & Sparkling','Yuzu Coffee Soda':'Tonic & Sparkling',
+  'Espresso Lemon Tonic':'Tonic & Sparkling','Espresso Soda':'Tonic & Sparkling','Nitro Frizzante':'Tonic & Sparkling',
+  'Sparkling Coffee Citrus':'Tonic & Sparkling','Yuzu Vanilla Nitro Tonic':'Tonic & Sparkling',
   // Matcha + Coffee
   'Matcha Affogato Coffee':'Matcha & Coffee','Matcha Espresso Latte':'Matcha & Coffee','Pistachio Matcha Latte':'Matcha & Coffee',
   'Strawberry Matcha Coffee Latte':'Matcha & Coffee','Honey Matcha Coffee':'Matcha & Coffee','Coconut Matcha Coffee':'Matcha & Coffee',
+  'Vanilla Matcha Latte Coffee':'Matcha & Coffee','Matcha Coconut Espresso Cooler':'Matcha & Coffee',
   // Chai + Coffee
   'Dirty Chai Latte':'Chai & Coffee','Chai Espresso Frappé':'Chai & Coffee','Gingerbread Dirty Chai':'Chai & Coffee',
   'Honey Oat Dirty Chai':'Chai & Coffee','Maple Dirty Chai':'Chai & Coffee','Vanilla Dirty Chai':'Chai & Coffee',
@@ -1551,35 +1559,43 @@ var RECIPE_CATEGORY_MAP = {
   'Affogato al Pistacchio':'Dessert Coffee','Banana Coffee Cream':'Dessert Coffee','Coffee Cheesecake Latte':'Dessert Coffee',
   'Coffee Milkshake':'Dessert Coffee','Tiramisu Latte':'Dessert Coffee','White Chocolate Strawberry Latte':'Dessert Coffee',
   'Mocha Frappuccino':'Dessert Coffee','Hazelnut Frappuccino':'Dessert Coffee','Frappuccino Caffè':'Dessert Coffee',
-  'Brown Sugar Oat Espresso':'Dessert Coffee',
+  'Brown Sugar Oat Espresso':'Dessert Coffee','Affogato al Caramello':'Dessert Coffee',
+  'Chocolate Coffee Delight':'Dessert Coffee','Coffee Smoothie':'Dessert Coffee','Mocha Frappé':'Dessert Coffee',
+  'Vanilla Ice Cream Coffee':'Dessert Coffee',
   // Mocktail
   'Coffee Mojito':'Mocktail','Coffee Spritz':'Mocktail','Lucky Red':'Mocktail',
   'Coffee & Jasmine Tea Mocktail':'Mocktail','Espresso Mojito':'Mocktail',
   // Starbucks Style
-  'Pumpkin Spice Latte Starbucks':'Starbucks Style','Vanilla Sweet Cream Cold':'Starbucks Style',
-  'Cookie Butter Latte':'Starbucks Style','Campfire Mocha':'Starbucks Style',"S'mores Latte":'Starbucks Style',
+  'Vanilla Sweet Cream Cold':'Starbucks Style','Cookie Butter Latte':'Starbucks Style',
+  'Campfire Mocha':'Starbucks Style',"S'mores Latte":'Starbucks Style',
   'Toffee Nut Latte':'Starbucks Style','Peanut Butter Coffee Shake':'Starbucks Style',
-  'Brown Sugar Shaken Espresso':'Starbucks Style',
+  'Brown Sugar Shaken Espresso':'Starbucks Style','Frappuccino Caffè':'Starbucks Style',
+  'Salted Maple Cold Brew':'Starbucks Style','Cookies & Cream Frappé':'Starbucks Style',
   // Asia Japan Korea
   'Dalgona Coffee':'Asia Japan Korea','Okinawa Brown Sugar Latte':'Asia Japan Korea','Seoul Banana Latte':'Asia Japan Korea',
   'Vietnamese Iced Coffee':'Asia Japan Korea','Hojicha Coffee Latte':'Asia Japan Korea','Yuzu Espresso':'Asia Japan Korea',
   'Matcha Coconut Coffee':'Asia Japan Korea','Cà Phê Sữa Đá':'Asia Japan Korea','Frappé Greco':'Asia Japan Korea',
+  'Hojicha Espresso Latte':'Asia Japan Korea','Matcha Cream Cold Brew':'Asia Japan Korea',
+  'Thai Iced Coffee':'Asia Japan Korea','Matcha Coconut Latte':'Asia Japan Korea',
   // Middle East
   'Arabic Spiced Coffee Latte':'Middle East','Date Coffee Shake':'Middle East','Dubai Chocolate Coffee':'Middle East',
   'Honey Saffron Latte':'Middle East','Pistachio Rose Latte':'Middle East','Turkish Mocha':'Middle East','Caffè Turco':'Middle East',
+  'Cardamom Latte':'Middle East',
   // Latin America
   'Café Cubano':'Latin America','Café de Olla':'Latin America','Café con Dulce de Leche':'Latin America',
   'Café Helado':'Latin America','Coconut Tres Leches Coffee':'Latin America','Horchata Coffee':'Latin America',
-  'Mexican Mocha':'Latin America',
+  'Mexican Mocha':'Latin America','Café con Leche Latino':'Latin America',
   // Global Fusion
   'Earl Grey Coffee Latte':'Global Fusion','London Fog Coffee Latte':'Global Fusion','Sweet Almond Hibiscus Latte':'Global Fusion',
   'Thai Tea Coffee Latte':'Global Fusion','Flat White Australiano':'Global Fusion','Espresso Romano':'Global Fusion',
+  'Hojicha Coffee Latte':'Global Fusion','Coconut Vanilla Mint Coffee':'Global Fusion','Ube Vanilla Latte':'Global Fusion',
   // Nordic Festive
   'Cinnamon Roll Latte':'Nordic & Festive','Nordic Vanilla Coffee':'Nordic & Festive','Peppermint Mocha':'Nordic & Festive',
   'Speculoos Latte':'Nordic & Festive','Winter Honey Latte':'Nordic & Festive','Ginger Orange Coffee':'Nordic & Festive',
+  'Forest Berry Coffee':'Nordic & Festive',
   // Africa Tropical
   'Ethiopian Honey Latte':'Africa & Tropical','Mango Espresso Cooler':'Africa & Tropical','Pineapple Espresso Soda':'Africa & Tropical',
-  'Hibiscus Coffee Tonic':'Africa & Tropical',
+  'Coconut Vanilla Cooler':'Africa & Tropical','Hibiscus Coconut Coffee':'Africa & Tropical','Passionfruit Coffee Tonic':'Africa & Tropical',
   // Wellness
   'Adaptogen Latte':'Wellness Coffee','Collagen Vanilla Latte':'Wellness Coffee','Mushroom Mocha':'Wellness Coffee',
   'Protein Iced Latte':'Wellness Coffee','Turmeric Honey Latte':'Wellness Coffee','Vanilla Oat Protein Coffee':'Wellness Coffee',
@@ -1768,12 +1784,14 @@ function renderShoppingList(){
   if(items.length===0){
     var totalCaps=(d.original||[]).length+(d.vertuo||[]).length;
     var msg=totalCaps===0
-      ? '<div style="text-align:center;padding:1.5rem;color:var(--text2)">'+
-          '<i class="ti ti-shopping-bag" style="font-size:28px;display:block;margin-bottom:10px;color:var(--esp)"></i>'+
-          '<div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:6px">Nessuna capsula in inventario</div>'+
-          '<div style="font-size:12px;color:var(--text2);margin-bottom:14px">Aggiungi le tue capsule o visita lo shop Nespresso per iniziare.</div>'+
-          '<a href="https://www.nespresso.com/it/it/order/capsules/original" style="display:inline-block;background:var(--esp);color:#EBCDB7;text-decoration:none;font-size:12px;font-weight:500;padding:8px 18px;border-radius:6px;margin-right:8px">☕ Shop Originale</a>'+
-          '<a href="https://www.nespresso.com/it/it/order/capsules/vertuo" style="display:inline-block;background:var(--cha);color:#fff;text-decoration:none;font-size:12px;font-weight:500;padding:8px 18px;border-radius:6px">☕ Shop Vertuo</a>'+
+      ? '<div style="text-align:center;padding:2rem 1rem;">'+
+          '<i class="ti ti-shopping-bag" style="font-size:40px;display:block;margin-bottom:14px;color:#3A2119"></i>'+
+          '<div style="font-size:16px;font-weight:600;color:#1A0E08;margin-bottom:8px">Nessuna capsula in inventario</div>'+
+          '<div style="font-size:13px;color:#4A2810;margin-bottom:20px;line-height:1.6">Aggiungi le tue capsule o visita lo shop Nespresso per iniziare.</div>'+
+          '<div style="display:flex;flex-direction:column;gap:12px;max-width:280px;margin:0 auto;">'+
+            '<a href="https://www.nespresso.com/it/it/order/capsules/original" style="display:block;background:#3A2119;color:#EBCDB7;text-decoration:none;font-size:15px;font-weight:700;padding:14px 20px;border-radius:10px;text-align:center;">☕ Shop Originale</a>'+
+            '<a href="https://www.nespresso.com/it/it/order/capsules/vertuo" style="display:block;background:#3A6E94;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:14px 20px;border-radius:10px;text-align:center;">☕ Shop Vertuo</a>'+
+          '</div>'+
         '</div>'
       : '<div style="text-align:center;padding:1.5rem;color:var(--text3);font-size:13px">'+
           '<i class="ti ti-circle-check" style="font-size:24px;display:block;margin-bottom:8px;color:#0F4020"></i>'+
